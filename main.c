@@ -5,5 +5,4 @@
 #include "Operations/ops.h"
 
 int main() {
-
 }
