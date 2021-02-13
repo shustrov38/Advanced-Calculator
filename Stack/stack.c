@@ -2,12 +2,12 @@
 
 Stack *stCreate(int elementSize) {
     Stack *stack = (Stack *) malloc(sizeof(Stack));
-    assert(stack != NULL);
+    assert(stack != NULL && "bad mem allocate");
     stack->capacity = STACK_H_INIT_CAPACITY;
     stack->elementSize = elementSize;
     stack->size = 0;
     stack->data = (char **) malloc(STACK_H_INIT_CAPACITY * sizeof(stack->elementSize));
-    assert(stack->data != NULL);
+    assert(stack->data != NULL && "bad mem allocate");
     return stack;
 }
 
@@ -16,18 +16,18 @@ void stPush(Stack *stack, char *data) {
         stResize(stack, stack->capacity * 2);
     }
     stack->data[stack->size] = (char *) malloc(stack->elementSize);
-    assert(stack->data[stack->size] != NULL);
+    assert(stack->data[stack->size] != NULL && "bad mem allocate");
     memcpy(stack->data[stack->size], data, stack->elementSize);
     stack->size++;
 }
 
 char *stTop(Stack *stack) {
-    assert(stack->size > 0);
+    assert(stack->size > 0 && "stack is empty");
     return stack->data[stack->size - 1];
 }
 
 void stPop(Stack *stack) {
-    assert(stack->size > 0);
+    assert(stack->size > 0 && "stack is empty");
     free(stTop(stack));
     stack->size--;
 }
@@ -47,7 +47,7 @@ void stPrint(Stack *stack) {
             }
         }
     } else {
-        printf("EMPTY");
+        printf("EMPTY STACK");
     }
     printf("]\n");
 }
