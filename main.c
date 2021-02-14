@@ -1,6 +1,8 @@
 #include <stdio.h>
+#include "Stack/stack.h"
 
 int main() {
-    int a;
+
+
     return 0;
 }
