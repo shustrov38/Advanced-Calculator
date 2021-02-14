@@ -3,4 +3,4 @@ project(Advanced_Calculator C)
 
 set(CMAKE_C_STANDARD 11)
 
-add_executable(Advanced_Calculator main.c)
+add_executable(Advanced_Calculator main.c Stack/stack.c Stack/stack.h )
