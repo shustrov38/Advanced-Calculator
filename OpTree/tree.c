@@ -53,8 +53,8 @@ void opTreeGen(Node *node, Stack *stack) {
 
 void opTreePrint(Node *node, Node *parent) {
     if (node) {
-        opTreePrint(node->left);
+        opTreePrint(node->left, NULL);
         printf("%s", node->value);
-        opTreePrint(node->right);
+        opTreePrint(node->right, NULL);
     }
 }
