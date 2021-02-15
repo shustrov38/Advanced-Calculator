@@ -4,6 +4,11 @@
 #include "Stack/stack.h"
 #include "Operations/ops.h"
 #include "OpTree/tree.h"
-
+#include "Parser/Parser.h"
 int main() {
+    /* Input Data Parser initialization */
+    Expression *e = createExpressions();
+    parserReadExpressions("../input.txt", e,1,1);
+    if(1){};
+    return 0;
 }
