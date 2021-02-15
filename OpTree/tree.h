@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <assert.h>
 #include <string.h>
+#include <complex.h>
 
 #include "../Stack/stack.h"
 #include "../Operations/ops.h"
@@ -19,6 +20,7 @@ typedef enum {
 typedef struct node_t {
     char *value;
     NodeState state;
+    double complex result;
     size_t elementSize;
     struct node_t *left, *right;
 } Node;
@@ -26,6 +28,8 @@ typedef struct node_t {
 Node *nodeInit(int elementSize);
 
 void opTreeGen(Node *node, Stack *stack);
+
+double complex opTreeCalc(Node *node);
 
 void opTreePrint(Node *node);
 

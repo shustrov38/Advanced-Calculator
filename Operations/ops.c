@@ -108,3 +108,51 @@ Priority getOpPriority(OpID id) {
             return NONE;
     }
 }
+
+double complex toComplex(char *str) {
+    return atof(str) * (str[strlen(str) - 1] == 'j' ? I : 1);
+}
+
+void printError(const char *error) {
+    fprintf(stderr, "%s", error);
+    exit(-1);
+};
+
+double complex __sum(double complex a, double complex b) {
+    return a + b;
+}
+
+double complex __sub(double complex a, double complex b) {
+    return a - b;
+}
+
+double complex __mul(double complex a, double complex b) {
+    return a * b;
+}
+
+double complex __div(double complex a, double complex b) {
+    if (!EQC(b, 0)) {
+        return a / b;
+    } else {
+        printError("division by zero");
+    }
+}
+
+double complex __mod(double complex a, double complex b) {
+    if (EQI(a, 0) && IS_INT(a) && EQI(b, 0) && IS_INT(b)) {
+        return (int)a % (int)b;
+    } else {
+        printError("function '%%' is defined for integers");
+    }
+}
+
+double complex __pwr(double complex a, double complex b) {
+    if (EQI(a, 0) && EQI(b, 0)) {
+        if (EQR(a, 0) && creal(b) < 0) {
+            printError("function '^' is not defined for negative powers of zero");
+        }
+        return pow(a, b);
+    } else {
+        printError("function '^' is not defined for complex numbers");
+    }
+}

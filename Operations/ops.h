@@ -3,7 +3,12 @@
 
 
 #include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include <complex.h>
+#include <math.h>
+
+#pragma region regionMacros
 
 // start enum index for operations
 #define OPS_H_OPERATIONS 10
@@ -34,6 +39,8 @@
 // get priority instantly
 #define PRIORITY(X) (getOpPriority(getOpID(X)))
 
+#pragma endregion regionMacros
+
 typedef enum {
     OPERATIONS = OPS_H_OPERATIONS,
     PLS, MNS, MUL, DIV, MOD, PWR,
@@ -59,5 +66,33 @@ OpID getOpID(char *op);
 
 Priority getOpPriority(OpID id);
 
+#define eps 1e-6
+
+// check real complex part of X to integer
+#define IS_INT(X) (fabs(creal(X) - (int)X) <= eps)
+// check real complex part of X to Y
+#define EQR(X, Y) (fabs(creal(X) - (Y)) <= eps)
+// check imag complex part of X to Y
+#define EQI(X, Y) (fabs(cimag(X) - (Y)) <= eps)
+// check for equal two complex numbers
+#define EQC(X, Y) (EQR(X, Y) && EQI(X, Y))
+
+double complex toComplex(char *str);
+
+#pragma region regionOperations
+
+double complex __sum(double complex a, double complex b);
+
+double complex __sub(double complex a, double complex b);
+
+double complex __mul(double complex a, double complex b);
+
+double complex __div(double complex a, double complex b);
+
+double complex __mod(double complex a, double complex b);
+
+double complex __pwr(double complex a, double complex b);
+
+#pragma endregion regionOperations
 
 #endif //ADVANCED_CALCULATOR_OPS_H

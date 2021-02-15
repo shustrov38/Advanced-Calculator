@@ -51,13 +51,43 @@ void opTreeGen(Node *node, Stack *stack) {
     }
 }
 
+double complex opTreeCalc(Node *node) {
+    double complex a, b;
+    if (node->state == OPERATION) {
+        a = opTreeCalc(node->right);
+        b = opTreeCalc(node->left);
+        switch (getOpID(node->value)) {
+            case PLS:
+                return __sum(a, b);
+            case MNS:
+                return __sub(a, b);
+            case MUL:
+                return __mul(a, b);
+            case DIV:
+                return __div(a, b);
+            case MOD:
+                return __mod(a, b);
+            case PWR:
+                return __pwr(a, b);
+        }
+    } else if (node->state == FUNCTION1) {
+
+    } else if (node->state == FUNCTION2) {
+
+    } else /* basic */ {
+        return toComplex(node->value);
+    }
+}
+
 void opTreePrint(Node *node) {
     if (node == NULL) return;
     switch (node->state) {
         case OPERATION:
+            printf("(");
             opTreePrint(node->left);
             printf("%s", node->value);
             opTreePrint(node->right);
+            printf(")");
             break;
         case FUNCTION1:
             printf("%s(", node->value);
