@@ -29,5 +29,20 @@ void opTreeGen(Node *node, Stack *stack);
 
 void opTreePrint(Node *node, Node *parent);
 
+/*
+    // example to present tree
+    int size = sizeof(char[10]);
+    Stack *stack = stCreate(size);
+    stPush(stack, "3");
+    stPush(stack, "a");
+    stPush(stack, "b");
+    stPush(stack, "+");
+    stPush(stack, "ln");
+    stPush(stack, "log");
+    stPrint(stack);
+    Node *root = nodeInit(size);
+    opTreeGen(root, stack);
+    opTreePrint(root, NULL);
+*/
 
 #endif //ADVANCED_CALCULATOR_TREE_H
