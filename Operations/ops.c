@@ -58,6 +58,12 @@ OpID getOpID(char *op) {
     if (!strcmp(op, "phase"))
         return PHASE;
 
+    if (!strcmp(op, "min"))
+        return MIN;
+
+    if (!strcmp(op, "max"))
+        return MAX;
+
     // constants
     if (!strcmp(op, "PI"))
         return PI;
@@ -93,6 +99,8 @@ Priority getOpPriority(OpID id) {
         case IMAG:
         case MAG:
         case PHASE:
+        case MIN:
+        case MAX:
             return FUNC;
         case PWR:
             return POWER;

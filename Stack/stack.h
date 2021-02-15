@@ -16,7 +16,7 @@ typedef struct {
     char **data;
 } Stack;
 
-Stack *stCreate();
+Stack *stCreate(int elementSize);
 
 void stPush(Stack *stack, char *data);
 
