@@ -6,7 +6,7 @@ Stack *stCreate(int elementSize) {
     stack->capacity = STACK_H_INIT_CAPACITY;
     stack->elementSize = elementSize;
     stack->size = 0;
-    stack->data = (char **) malloc(STACK_H_INIT_CAPACITY * sizeof(stack->elementSize));
+    stack->data = (char **) malloc(STACK_H_INIT_CAPACITY * stack->elementSize);
     assert(stack->data != NULL && "bad mem allocate");
     return stack;
 }

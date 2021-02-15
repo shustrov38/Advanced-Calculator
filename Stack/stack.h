@@ -1,6 +1,10 @@
 #ifndef ADVANCED_CALCULATOR_STACK_H
 #define ADVANCED_CALCULATOR_STACK_H
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 088faea77faf5ae85b4c6380f9b781540c184a76
 #include <stdio.h>
 #include <stdlib.h>
 #include <malloc.h>
@@ -15,7 +19,11 @@ typedef struct {
     char **data;
 } Stack;
 
+<<<<<<< HEAD
 Stack *stCreate();
+=======
+Stack *stCreate(int elementSize);
+>>>>>>> 088faea77faf5ae85b4c6380f9b781540c184a76
 
 void stPush(Stack *stack, char *data);
 
@@ -28,4 +36,7 @@ void stResize(Stack *stack, int newCap);
 void stPrint(Stack *stack);
 
 #endif //ADVANCED_CALCULATOR_STACK_H
+<<<<<<< HEAD
 
+=======
+>>>>>>> 088faea77faf5ae85b4c6380f9b781540c184a76
