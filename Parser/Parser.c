@@ -36,6 +36,7 @@ void parserReadExpressions(char *filename, Expression *e, int debug, int forceLo
         int j = 0;
         int opF = 1;
         while (buffStr[i] != '\n' && buffStr[i] != '\0') {
+            if (i<strlen(buffStr)-1 && buffStr[i] == ' ') i++;
             if (forceLowerCase && buffStr[i] >= 'A' && buffStr[i] <= 'Z') buffStr[i] += ('a' - 'A');
             if (buffStr[i] != ')' && buffStr[i] != '(' && buffStr[i] != ',' && buffStr[i] != '+' && buffStr[i] != '-' &&
                 buffStr[i] != '/' && buffStr[i] != '*' && buffStr[i] != '^' && buffStr[i] != '=') {
@@ -51,8 +52,9 @@ void parserReadExpressions(char *filename, Expression *e, int debug, int forceLo
             }
             ++i;
         };
+        if(e[number].formula[0] && !strcmp(e[number].formula[1],"=")) strcpy(e[number].varName,e[number].formula[0]);
         if (debug) {
-            printf("expression %d:[ ", number + 1);
+            printf("expression (%s) %d:[ ", e[number].varName, number + 1);
             for (int i = 0; i < MAX_E_SIZE && e[number].formula[i][0] != '\0'; ++i) {
                 printf("%s ", e[number].formula[i]);
             }
