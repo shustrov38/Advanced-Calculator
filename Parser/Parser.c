@@ -38,8 +38,15 @@ void parserReadExpressions(char *filename, Expression *e, int debug, int forceLo
         while (buffStr[i] != '\n' && buffStr[i] != '\0') {
             if (i<strlen(buffStr)-1 && buffStr[i] == ' ') i++;
             if (forceLowerCase && buffStr[i] >= 'A' && buffStr[i] <= 'Z') buffStr[i] += ('a' - 'A');
+            if (!((buffStr[i] >= 'a' && buffStr[i] <= 'z')||(buffStr[i] >= '0' && buffStr[i] <= '9')||(buffStr[i] == ')'
+            || buffStr[i] == '(' || buffStr[i] == ',' || buffStr[i] == '+' || buffStr[i] == '-' ||
+            buffStr[i] == '/' || buffStr[i] == '*' || buffStr[i] == '^' || buffStr[i] == '=' || buffStr[i] == '%' ||
+            buffStr[i] == '.'))){
+                printf("unknown char");
+                exit(-1);
+            };
             if (buffStr[i] != ')' && buffStr[i] != '(' && buffStr[i] != ',' && buffStr[i] != '+' && buffStr[i] != '-' &&
-                buffStr[i] != '/' && buffStr[i] != '*' && buffStr[i] != '^' && buffStr[i] != '=') {
+                buffStr[i] != '/' && buffStr[i] != '*' && buffStr[i] != '^' && buffStr[i] != '=' && buffStr[i] != '%') {
                 opF = 0;
                 e[number].formula[elementIndex][j] = buffStr[i];
                 ++j;
@@ -52,9 +59,11 @@ void parserReadExpressions(char *filename, Expression *e, int debug, int forceLo
             }
             ++i;
         };
-        if(e[number].formula[0] && !strcmp(e[number].formula[1],"=")) strcpy(e[number].varName,e[number].formula[0]);
+        if(e[number].formula[0] && !strcmp(e[number].formula[1],"=")) {
+            strcpy(e[number].varName,e[number].formula[0]);
+        }
         if (debug) {
-            printf("expression (%s) %d:[ ", e[number].varName, number + 1);
+            printf("expression (%s) #%d:[ ", e[number].varName, number + 1);
             for (int i = 0; i < MAX_E_SIZE && e[number].formula[i][0] != '\0'; ++i) {
                 printf("%s ", e[number].formula[i]);
             }
