@@ -51,24 +51,24 @@ void opTreeGen(Node *node, Stack *stack) {
     }
 }
 
-void opTreePrint(Node *node, Node *parent) {
+void opTreePrint(Node *node) {
     if (node == NULL) return;
     switch (node->state) {
         case OPERATION:
-            opTreePrint(node->left, NULL);
+            opTreePrint(node->left);
             printf("%s", node->value);
-            opTreePrint(node->right, NULL);
+            opTreePrint(node->right);
             break;
         case FUNCTION1:
             printf("%s(", node->value);
-            opTreePrint(node->right, NULL);
+            opTreePrint(node->right);
             printf(")");
             break;
         case FUNCTION2:
             printf("%s(", node->value);
-            opTreePrint(node->left, NULL);
+            opTreePrint(node->left);
             printf(",");
-            opTreePrint(node->right, NULL);
+            opTreePrint(node->right);
             printf(")");
             break;
         case BASIC:

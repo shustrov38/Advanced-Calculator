@@ -27,7 +27,7 @@ Node *nodeInit(int elementSize);
 
 void opTreeGen(Node *node, Stack *stack);
 
-void opTreePrint(Node *node, Node *parent);
+void opTreePrint(Node *node);
 
 /*
     // example to present tree
@@ -42,7 +42,7 @@ void opTreePrint(Node *node, Node *parent);
     stPrint(stack);
     Node *root = nodeInit(size);
     opTreeGen(root, stack);
-    opTreePrint(root, NULL);
+    opTreePrint(root);
 */
 
 #endif //ADVANCED_CALCULATOR_TREE_H
