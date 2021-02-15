@@ -16,8 +16,11 @@
 // enum index for variable
 #define OPS_H_VARIABLE 9999
 
+// check if (X) is variable
+#define IS_VAR(X) (OPS_H_VARIABLE == getOpID(X))
+
 // check if (X) is operation
-#define IS_OPER(X) (OPS_H_OPERATIONS < getOpID(X) && getOpID(X) < OPS_H_FUNCTIONS)
+#define IS_OPER(X) (OPS_H_OPERATIONS < getOpID(X) && getOpID(X) < OPS_H_FUNCTIONS_1ARG)
 
 // check if (X) is function with 1 argument
 #define IS_FUNC_1ARG(X) (OPS_H_FUNCTIONS_1ARG < getOpID(X) && getOpID(X) < OPS_H_FUNCTIONS_2ARG)
@@ -49,8 +52,7 @@ typedef enum {
     PROD,
     FUNC,
     POWER,
-    UNARY,
-    CONST
+    UNARY
 } Priority;
 
 OpID getOpID(char *op);

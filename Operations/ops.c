@@ -104,10 +104,6 @@ Priority getOpPriority(OpID id) {
             return FUNC;
         case PWR:
             return POWER;
-        case PI:
-        case EULER:
-        case J:
-            return CONST;
         default:
             return NONE;
     }
