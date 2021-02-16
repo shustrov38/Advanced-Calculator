@@ -22,6 +22,7 @@ typedef struct Expression {
     char dependencies[MAX_E_SIZE][MAX_V_NAME_SIZE]; //vars, on which expression depends, according to plain scanning
     int evenDependenciesCnt; // num of dependencies after scan
     int trueDependenciesCnt; // num of dependencies after reverse+BFS
+    double complex value;
 
 } Expression;
 

@@ -11,7 +11,6 @@ void initExpression(Expression *E) {
         for (int j = 0; j < MAX_E_SIZE; ++j) {
             memset(E[i].formula[j], 0, MAX_V_NAME_SIZE);
             memset(E[i].dependencies[j], 0, MAX_V_NAME_SIZE);
-
         }
     }
 };
@@ -28,10 +27,10 @@ void splitExpression(char *src, char dest[100][10], char divs[]) {
     int i = 0;
     int k = 0;
     int z = 0;
-    int opF = 1;
+    int opF = 1; //is op flag for ch
     while (src[i] != '\n' && src[i] != '\0') {
         if (i < strlen(src) - 1 && src[i] == ' ') i++;
-        int dvF = 0;
+        int dvF = 0; //is divided flag
         for (int j = 0; j < strlen(divs); j++) {
             if (src[i] == divs[j]) dvF = 1;
         }
