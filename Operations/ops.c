@@ -1,17 +1,23 @@
 #include "ops.h"
 
 OpID getOpID(char *op) {
-
-    // arithmetic operations
-
-    if (!strcmp(op, ")")||!strcmp(op, "(")) //!!! OpIds!!!
-        return MUL;
-    if (op[0]>='0' && op[0]<='9')
-        return MUL;
+    // extra options
     if (!strcmp(op, "="))
         return PLS;
 
+    if (!strcmp(op, "("))
+        return OPB;
 
+    if (!strcmp(op, ")"))
+        return CLB;
+
+    if (!strcmp(op, ","))
+        return COM;
+
+    if ('0' <= op[0] && op[0] <= '9')
+        return NUM;
+
+    // arithmetic operations
     if (!strcmp(op, "+"))
         return PLS;
 
@@ -116,4 +122,145 @@ Priority getOpPriority(OpID id) {
         default:
             return NONE;
     }
+}
+
+double complex toComplex(char *str) {
+    return atof(str) * (str[strlen(str) - 1] == 'j' ? I : 1);
+}
+
+void printNum(double complex value) {
+    if (EQI(value, 0)) {
+        if (IS_INT(value)) {
+            printf("%d", (int) value);
+        } else {
+            printf("%f", creal(value));
+        }
+    } else {
+        printf("%f + %fi", creal(value), cimag(value));
+    }
+}
+
+double complex _sum(double complex a, double complex b) {
+    return a + b;
+}
+
+double complex _sub(double complex a, double complex b) {
+    return a - b;
+}
+
+double complex _mul(double complex a, double complex b) {
+    return a * b;
+}
+
+double complex _div(double complex a, double complex b) {
+    if (EQC(b, 0)) {
+        ERROR("division by zero");
+    }
+    return a / b;
+}
+
+double complex _mod(double complex a, double complex b) {
+    if (!(EQI(a, 0) && IS_INT(a) && EQI(b, 0) && IS_INT(b))) {
+        ERROR("operation '%%' is defined for integers");
+    }
+    return (int) a % (int) b;
+}
+
+double complex _pwr(double complex a, double complex b) {
+    if (!(EQI(a, 0) && EQI(b, 0))) {
+        ERROR("operation '^' is not defined for complex numbers");
+    }
+    if (EQR(a, 0) && creal(b) < 0) {
+        ERROR("operation '^' is not defined for negative powers of zero");
+    }
+    return pow(a, b);
+}
+
+double complex _sin(double complex a) {
+    return csin(a);
+}
+
+double complex _cos(double complex a) {
+    return ccos(a);
+}
+
+double complex _ln(double complex a) {
+    if (EQI(a, 0) && creal(a) < 0) {
+        ERROR("function 'ln' for non-complex numbers defined for positive values");
+    }
+    return clog(a);
+}
+
+double complex _log(double complex a) {
+    if (EQI(a, 0) && creal(a) < 0) {
+        ERROR("function 'log' for non-complex numbers defined for positive values");
+    }
+    return clog10(a);
+}
+
+double complex _sqrt(double complex a) {
+    if (EQI(a, 0) && creal(a) < 0) {
+        ERROR("function 'sqrt' for non-complex numbers defined for positive values");
+    }
+    return csqrt(a);
+}
+
+double complex _abs(double complex a) {
+    if (!EQI(a, 0)) {
+        ERROR("function 'abs' is not defined for complex numbers");
+    }
+    return fabs(creal(a));
+}
+
+double complex _exp(double complex a) {
+    return cexp(a);
+}
+
+double complex _real(double complex a) {
+    return creal(a);
+}
+
+double complex _imag(double complex a) {
+    return cimag(a);
+}
+
+double complex _mag(double complex a) {
+    return cabs(a);
+}
+
+double complex _phase(double complex a) {
+    return carg(a);
+}
+
+double complex _pow(double complex a, double complex b) {
+    if (EQR(a, 0) && EQI(a, 0) && creal(b) < 0 && EQI(b, 0)) {
+        ERROR("function 'pow' is not defined for negative powers of zero");
+    }
+    return cpow(a, b);
+}
+
+double complex _min(double complex a, double complex b) {
+    if (!(EQI(a, 0) && EQI(b, 0))) {
+        ERROR("function 'min' is not defined for complex numbers");
+    }
+    return (creal(a) < creal(b) ? a : b);
+}
+
+double complex _max(double complex a, double complex b) {
+    if (!(EQI(a, 0) && EQI(b, 0))) {
+        ERROR("function 'max' is not defined for complex numbers");
+    }
+    return (creal(a) > creal(b) ? a : b);
+}
+
+double complex _pi() {
+    return M_PI;
+}
+
+double complex _euler() {
+    return M_E;
+}
+
+double complex _j() {
+    return I;
 }

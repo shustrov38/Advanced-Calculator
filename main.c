@@ -2,7 +2,6 @@
 #include <string.h>
 
 #include "Stack/stack.h"
-#include "Operations/ops.h"
 #include "OpTree/tree.h"
 #include "Parser/Parser.h"
 int main() {
