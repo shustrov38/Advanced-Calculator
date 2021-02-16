@@ -30,8 +30,8 @@ Stack *rpnFunc(rpnProcessor *stack, char **string, int size) {
                 if (PRIORITY(string[i]) > PRIORITY(stTop(stack->opStack))) {
                     stPush(stack->opStack, string[i]);
                 } else {
-                    if (strcmp(stTop(stack->opStack), "^") == 0 && strcmp((string[i]), "^") == 0) {
-                        stPush(stack->finalStack, stTop(stack->opStack));
+                    if ((IS_FUNC_2ARG(string[i]) || IS_FUNC_1ARG(string[i])) && strcmp((stTop(stack->opStack)), "^") == 0){
+                        stPush(stack->opStack, string[i]);
                     } else {
                         stPush(stack->finalStack, stTop(stack->opStack));
                         stPop(stack->opStack);
@@ -59,10 +59,10 @@ Stack *rpnFunc(rpnProcessor *stack, char **string, int size) {
             openBracket--;
         }
 //        DEBUG
-//        printf("op");
-//        stPrint(stack->opStack);
-//        printf("final");
-//        stPrint(stack->finalStack);
+        printf("op");
+        stPrint(stack->opStack);
+        printf("final");
+        stPrint(stack->finalStack);
 //        DEBUG
     }
     while (stack->opStack->size != 0) {
