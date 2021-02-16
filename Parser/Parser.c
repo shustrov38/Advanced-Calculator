@@ -45,7 +45,7 @@ int splitExpression(char *src, char dest[100][10], char divs[]) {
             opF = 1;
         }
     }
-    return k + 1;
+    return k + (dest[k][0] != 0);
 }
 
 int parserReadExpressions(char *filename, Expression *e, int debug, int forceLowerCase) {
