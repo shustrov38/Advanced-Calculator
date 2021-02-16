@@ -24,6 +24,11 @@ Stack *rpnFunc(rpnProcessor *stack, char **string, int size) {
             stPush(stack->finalStack, string[i]);
         }
 
+        if (strcmp(string[i], ",") == 0 && strcmp(stTop(stack->opStack), "(" ) != 0){
+            stPush(stack->finalStack, stTop(stack->opStack));
+            stPop(stack->opStack);
+        }
+
         if (IS_OPER(string[i]) || IS_FUNC_1ARG(string[i]) || IS_FUNC_2ARG(string[i])) {
             if (stack->opStack->size != 0 && (IS_OPER(stTop(stack->opStack)) || IS_FUNC_1ARG(stTop(stack->opStack)) ||
                                               IS_FUNC_2ARG(stTop(stack->opStack)))) {
