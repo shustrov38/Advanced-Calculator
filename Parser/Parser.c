@@ -23,22 +23,22 @@ Expression *createExpressions() {
     return tmp;
 };
 
-void **splitExpression(char *src, char dest[100][10], char divs[]){
+void splitExpression(char *src, char dest[100][10], char divs[]) {
+    assert((src) && "given null str ptr");
     int i = 0;
     int k = 0;
     int z = 0;
     int opF = 1;
-    while(src[i] !='\n' && src[i]!='\0'){
-        if (i<strlen(src)-1 && src[i] == ' ') i++;
+    while (src[i] != '\n' && src[i] != '\0') {
+        if (i < strlen(src) - 1 && src[i] == ' ') i++;
         int dvF = 0;
-        for (int j = 0; j < strlen(divs); j++){
+        for (int j = 0; j < strlen(divs); j++) {
             if (src[i] == divs[j]) dvF = 1;
         }
-        if (!dvF){
-            opF = 0;
+        if (!dvF) {
             dest[k][z++] = src[i++];
-        }
-        else{
+            opF = 0;
+        } else {
             z = 0;
             if (!opF) k++;
             dest[k++][0] = src[i++];
@@ -55,26 +55,40 @@ void parserReadExpressions(char *filename, Expression *e, int debug, int forceLo
     int number = 0;
     while (!feof(in)) {
         fgets(buffStr, MAX_E_SIZE, in);
-        for (int i = 0; i< strlen(buffStr); ++i){
+        for (int i = 0; i < strlen(buffStr); ++i) {
             if (forceLowerCase && buffStr[i] >= 'A' && buffStr[i] <= 'Z') buffStr[i] += ('a' - 'A');
         }
-        splitExpression(buffStr, e[number].formula, "=-+/*^,%");
-        if(e[number].formula[0] && !strcmp(e[number].formula[1],"=")) {
-            strcpy(e[number].varName,e[number].formula[0]);
+        splitExpression(buffStr, e[number].formula, "()=-+/*^,%");
+        if (e[number].formula[0] && !strcmp(e[number].formula[1], "=")) {
+            strcpy(e[number].varName, e[number].formula[0]);
+        }
+        int i = 0;
+        int j = 0;
+        while(e[number].formula[i][0]!='\0'){
+            if(getOpID(e[number].formula[i])==VAR && strcmp(e[number].formula[i],e[number].varName)){
+                strcpy(e[number].dependencies[j++],e[number].formula[i]);
+                e[number].evenDependenciesCnt++;
+            }
+            i++;
         }
         if (debug) {
             printf("expression (%s) #%d:[ ", e[number].varName, number + 1);
             for (int i = 0; i < MAX_E_SIZE && e[number].formula[i][0] != '\0'; ++i) {
                 printf("%s ", e[number].formula[i]);
             }
-            printf("]\n");
+            printf("] ");
+            printf("dependencies are:( ", e[number].varName, number + 1);
+            for (int i = 0; i < MAX_E_SIZE && e[number].dependencies[i][0] != '\0'; ++i) {
+                printf("%s ", e[number].dependencies[i]);
+            }
+            printf(") with total of %d even dependencies \n",e[number].evenDependenciesCnt);
         }
         ++number;
     };
     fclose(in);
 }
 
-void destroyExpressionsArray(Expression *E){
+void destroyExpressionsArray(Expression *E) {
     assert((E) && "null ptr, lul, nothing to delete");
     free(E);
 }

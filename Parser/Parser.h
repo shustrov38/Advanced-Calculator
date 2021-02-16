@@ -28,6 +28,6 @@ typedef struct Expression {
 Expression *createExpressions();
 void parserReadExpressions(char *filename, Expression *parsedExpr, int debug, int forceLowerCase);
 void destroyExpressionsArray(Expression *E);
-void **splitExpression(char *str, char dest[100][10], char divs[]);
+void splitExpression(char *str, char dest[100][10], char divs[]);
 
 #endif //ADVANCED_CALCULATOR_PARSER_H

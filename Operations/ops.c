@@ -3,6 +3,15 @@
 OpID getOpID(char *op) {
 
     // arithmetic operations
+
+    if (!strcmp(op, ")")||!strcmp(op, "(")) //!!! OpIds!!!
+        return MUL;
+    if (op[0]>='0' && op[0]<='9')
+        return MUL;
+    if (!strcmp(op, "="))
+        return PLS;
+
+
     if (!strcmp(op, "+"))
         return PLS;
 
@@ -65,7 +74,7 @@ OpID getOpID(char *op) {
         return MAX;
 
     // constants
-    if (!strcmp(op, "PI"))
+    if (!strcmp(op, "pi"))
         return PI;
 
     if (!strcmp(op, "e"))
