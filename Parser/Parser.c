@@ -63,6 +63,10 @@ int parserReadExpressions(char *filename, Expression *e, int debug, int forceLow
         e[number].segCnt = splitExpression(buffStr, e[number].formula, "()=-+/*^,%");
         if (e[number].formula[0] && !strcmp(e[number].formula[1], "=")) {
             strcpy(e[number].varName, e[number].formula[0]);
+            for (int segI = 0; segI < e[number].segCnt-2; segI++){
+                strcpy(e[number].formula[segI],e[number].formula[segI+2]);
+            }
+            e[number].segCnt-=2;
         }
         int i = 0;
         int j = 0;
