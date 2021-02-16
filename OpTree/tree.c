@@ -52,30 +52,59 @@ void opTreeGen(Node *node, Stack *stack) {
 }
 
 double complex opTreeCalc(Node *node) {
-    double complex a, b;
-    if (node->state == OPERATION) {
-        a = opTreeCalc(node->right);
-        b = opTreeCalc(node->left);
-        switch (getOpID(node->value)) {
-            case PLS:
-                return __sum(a, b);
-            case MNS:
-                return __sub(a, b);
-            case MUL:
-                return __mul(a, b);
-            case DIV:
-                return __div(a, b);
-            case MOD:
-                return __mod(a, b);
-            case PWR:
-                return __pwr(a, b);
-        }
-    } else if (node->state == FUNCTION1) {
-
-    } else if (node->state == FUNCTION2) {
-
-    } else /* basic */ {
-        return toComplex(node->value);
+    if (node == NULL) return 0;
+    double complex a = opTreeCalc(node->right), b = opTreeCalc(node->left);
+    switch (getOpID(node->value)) {
+        case PLS:
+            return _sum(a, b);
+        case MNS:
+            return _sub(a, b);
+        case MUL:
+            return _mul(a, b);
+        case DIV:
+            return _div(a, b);
+        case MOD:
+            return _mod(a, b);
+        case PWR:
+            return _pwr(a, b);
+        case SIN:
+            return _sin(a);
+        case COS:
+            return _cos(a);
+        case LN:
+            return _ln(a);
+        case LOG:
+            return _log(a);
+        case SQRT:
+            return _sqrt(a);
+        case ABS:
+            return _abs(a);
+        case EXP:
+            return _exp(a);
+        case REAL:
+            return _real(a);
+        case IMAG:
+            return _imag(a);
+        case MAG:
+            return _mag(a);
+        case PHASE:
+            return _phase(a);
+        case POW:
+            return _pow(a, b);
+        case MAX:
+            return _max(a, b);
+        case MIN:
+            return _min(a, b);
+        case PI:
+            return _pi();
+        case EULER:
+            return _euler();
+        case J:
+            return _j();
+        case VAR:
+            return toComplex(node->value);
+        default:
+            return 0;
     }
 }
 
@@ -84,9 +113,9 @@ void opTreePrint(Node *node) {
     switch (node->state) {
         case OPERATION:
             printf("(");
-            opTreePrint(node->left);
-            printf("%s", node->value);
             opTreePrint(node->right);
+            printf("%s", node->value);
+            opTreePrint(node->left);
             printf(")");
             break;
         case FUNCTION1:
@@ -96,9 +125,9 @@ void opTreePrint(Node *node) {
             break;
         case FUNCTION2:
             printf("%s(", node->value);
-            opTreePrint(node->left);
-            printf(",");
             opTreePrint(node->right);
+            printf(",");
+            opTreePrint(node->left);
             printf(")");
             break;
         case BASIC:
