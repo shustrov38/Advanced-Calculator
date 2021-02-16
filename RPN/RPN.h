@@ -4,8 +4,6 @@
 #include "../Operations/ops.h"
 #endif //ADVANCED_CALCULATOR_RPN_H
 
-
-
 typedef struct {
     Stack *numStack;
     Stack *opStack;
