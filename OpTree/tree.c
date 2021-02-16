@@ -56,6 +56,12 @@ double complex opTreeCalc(Node *node) {
             return _mod(a, b);
         case PWR:
             return _pwr(a, b);
+        case AND:
+            return _and(a, b);
+        case OR:
+            return _or(a, b);
+        case XOR:
+            return _xor(a, b);
         case SIN:
             return _sin(b);
         case COS:

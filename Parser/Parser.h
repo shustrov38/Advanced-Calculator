@@ -28,7 +28,7 @@ Expression *createExpressions();
 
 int parserReadExpressions(char *filename, Expression *parsedExpr, int debug, int forceLowerCase);
 
-void destroyExpressionsArray(Expression *E, int n);
+void destroyExpressionsArray(Expression *E);
 
 int splitExpression(char *str, char **dest, char divs[]);
 

@@ -36,6 +36,15 @@ OpID getOpID(char *op) {
     if (!strcmp(op, "^"))
         return PWR;
 
+    if (!strcmp(op, "&"))
+        return AND;
+
+    if (!strcmp(op, "|"))
+        return OR;
+
+    if (!strcmp(op, "@"))
+        return XOR;
+
     // functions
     if (!strcmp(op, "sin"))
         return SIN;
@@ -97,10 +106,13 @@ Priority getOpPriority(OpID id) {
     switch (id) {
         case PLS:
         case MNS:
+        case OR:
+        case XOR:
             return SUM;
         case MUL:
         case DIV:
         case MOD:
+        case AND:
             return PROD;
         case SIN:
         case COS:
@@ -176,6 +188,27 @@ double complex _pwr(double complex a, double complex b) {
         ERROR("operation '^' is not defined for negative powers of zero");
     }
     return pow(a, b);
+}
+
+double complex _and(double complex a, double complex b) {
+    if (!(EQI(a, 0) && IS_INT(a) && EQI(b, 0) && IS_INT(b))) {
+        ERROR("operation '&' is defined for integers");
+    }
+    return (int)a & (int)b;
+}
+
+double complex _or(double complex a, double complex b) {
+    if (!(EQI(a, 0) && IS_INT(a) && EQI(b, 0) && IS_INT(b))) {
+        ERROR("operation '|' is defined for integers");
+    }
+    return (int)a | (int)b;
+}
+
+double complex _xor(double complex a, double complex b) {
+    if (!(EQI(a, 0) && IS_INT(a) && EQI(b, 0) && IS_INT(b))) {
+        ERROR("operation 'xor' is defined for integers");
+    }
+    return (int)a ^ (int)b;
 }
 
 double complex _sin(double complex a) {
