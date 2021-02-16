@@ -77,6 +77,8 @@ int parserReadExpressions(char *filename, Expression *e, int debug, int forceLow
             for (int segI = 0; segI < e[number].segCnt-2; segI++){
                 strcpy(e[number].formula[segI],e[number].formula[segI+2]);
             }
+            memset(e[number].formula[e[number].segCnt-1],0,100);
+            memset(e[number].formula[e[number].segCnt-2],0,100);
             e[number].segCnt-=2;
         }
         int i = 0;

@@ -28,6 +28,6 @@ int main() {
     printf(" = ");
     printNum(result);
 
-    destroyExpressionsArray(e, sz);
+    //destroyExpressionsArray(e, sz); //!todo
     return EXIT_SUCCESS;
 }
