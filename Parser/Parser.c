@@ -71,7 +71,7 @@ int parserReadExpressions(char *filename, Expression *e, int debug, int forceLow
         for (int i = 0; i < strlen(buffStr); ++i) {
             if (forceLowerCase && buffStr[i] >= 'A' && buffStr[i] <= 'Z') buffStr[i] += ('a' - 'A');
         }
-        e[number].segCnt = splitExpression(buffStr, e[number].formula, "()=-+/*^,%");
+        e[number].segCnt = splitExpression(buffStr, e[number].formula, "()=-+/*^,%@");
         if (e[number].formula[0] && !strcmp(e[number].formula[1], "=")) {
             strcpy(e[number].varName, e[number].formula[0]);
             for (int segI = 0; segI < e[number].segCnt-2; segI++){
