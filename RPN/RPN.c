@@ -58,12 +58,11 @@ Stack *rpnFunc(rpnProcessor *stack, char **string, int size) {
             }
             openBracket--;
         }
-
 //        DEBUG
-        printf("op");
-        stPrint(stack->opStack);
-        printf("final");
-        stPrint(stack->finalStack);
+//        printf("op");
+//        stPrint(stack->opStack);
+//        printf("final");
+//        stPrint(stack->finalStack);
 //        DEBUG
     }
     while (stack->opStack->size != 0) {
