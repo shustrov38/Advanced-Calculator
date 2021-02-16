@@ -1,15 +1,28 @@
 #include <stdio.h>
-#include <string.h>
-
-#include "Operations/ops.h"
-#include "Stack/stack.h"
-
-#include "Parser/Parser.h"
-#include "RPN/RPN.h"
-#include "OpTree/tree.h"
+#include "Graph/graph.h"
 
 int main() {
-    /* Input Data Parser initialization */
+    int n;
+    scanf("%d", &n);
+
+    int **g = (int**) malloc(n * sizeof(int*));
+    for (int i = 0; i < n; i++) {
+        g[i] = (int*) malloc(n * sizeof(int));
+    }
+
+    for (int i = 0; i < n; ++i){
+        for (int j = 0; j < n; ++j){
+            scanf("%d", &g[i][j]);
+        }
+    }
+
+    g = transpose(g, n);
+
+    //dfsAlgorithm(inti(n), g, n);
+
+    printGraph(g , n);
+
+    /* Input Data Parser initialization
     Expression *e = createExpressions();
     int sz = parserReadExpressions("../input.txt", e, 0, 1);
     int n = e[0].segCnt;
@@ -17,7 +30,6 @@ int main() {
     rpnProcessor *outputStack;
     outputStack = init();
 
-//////////////////////
     char **kekt = (char **) malloc(100 * sizeof(char *));
     for (int i = 0; i < 100; ++i) {
         kekt[i] = (char *) malloc(10 * sizeof(char));
@@ -28,7 +40,6 @@ int main() {
         printf("'%s' ", kekt[i]);
     }
     printf("\n");
-//////////////////////
 
     stPrint(rpnFunc(outputStack, kekt, n));
 
@@ -41,5 +52,5 @@ int main() {
     printNum(result);
 
     destroyExpressionsArray(e);
-    return EXIT_SUCCESS;
+    return EXIT_SUCCESS;*/
 }
