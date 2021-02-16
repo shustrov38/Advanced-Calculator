@@ -148,4 +148,5 @@ double complex _j();
 
 #pragma endregion CONSTANTS
 
+
 #endif //ADVANCED_CALCULATOR_OPS_H

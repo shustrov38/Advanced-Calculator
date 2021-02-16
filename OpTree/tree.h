@@ -31,8 +31,7 @@ void opTreeGen(Node *node, Stack *stack);
 
 double complex opTreeCalc(Node *node);
 
-void opTreePrint(Node *node);
+void opTreePrint(Node *node, Node *parent);
 
-void exampleRun();
 
 #endif //ADVANCED_CALCULATOR_TREE_H

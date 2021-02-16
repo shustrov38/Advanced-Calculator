@@ -22,7 +22,8 @@ int main() {
     int size = sizeof(char[10]);
     Node *root = nodeInit(size);
     opTreeGen(root, rpnFunc(outputStack, e[0].formula, n));
-    opTreePrint(root);
+    opTreePrint(root, NULL);
+
     double complex result = opTreeCalc(root);
     printf(" = ");
     printNum(result);

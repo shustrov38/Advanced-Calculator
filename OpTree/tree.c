@@ -98,47 +98,32 @@ double complex opTreeCalc(Node *node) {
     }
 }
 
-void opTreePrint(Node *node) {
+void opTreePrint(Node *node, Node *parent) {
     if (node == NULL) return;
+    int need;
     switch (node->state) {
         case OPERATION:
-            printf("(");
-            opTreePrint(node->left);
+            need = (parent != NULL) && (PRIORITY(node->value) == SUM && PRIORITY(parent->value) == PROD);
+            if (need) printf("(");
+            opTreePrint(node->left, node);
             printf("%s", node->value);
-            opTreePrint(node->right);
-            printf(")");
+            opTreePrint(node->right, node);
+            if (need) printf(")");
             break;
         case FUNCTION1:
             printf("%s(", node->value);
-            opTreePrint(node->right);
+            opTreePrint(node->right, node);
             printf(")");
             break;
         case FUNCTION2:
             printf("%s(", node->value);
-            opTreePrint(node->left);
+            opTreePrint(node->left, node);
             printf(",");
-            opTreePrint(node->right);
+            opTreePrint(node->right, node);
             printf(")");
             break;
         case BASIC:
             printf("%s", node->value);
             break;
     }
-}
-
-void exampleRun() {
-    int size = sizeof(char[10]);
-    Stack *stack = stCreate(size);
-    stPush(stack, "e");
-    stPush(stack, "1.23");
-    stPush(stack, "+");
-    stPush(stack, "ln");
-    stPush(stack, "sin");
-    stPrint(stack);
-    Node *root = nodeInit(size);
-    opTreeGen(root, stack);
-    opTreePrint(root);
-    double complex result = opTreeCalc(root);
-    printf(" = ");
-    printNum(result);
 }

@@ -126,9 +126,8 @@ Priority getOpPriority(OpID id) {
 }
 
 double complex toComplex(char *str) {
-    // TODO: rework function
-    int len = strlen(str);
-    return (str[len - 1] == 'j' ? I : 1) * (len == 1 && str[0] == 'j' ? 1 : atof(str));
+    int e = (int) strlen(str);
+    return (e == 1 && str[0] == 'j' ? 1 : atof(str)) *  (str[e - 1] == 'j' ? I : 1);
 }
 
 void printNum(double complex value) {
