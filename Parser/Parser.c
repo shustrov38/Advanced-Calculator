@@ -4,15 +4,16 @@
 
 void initExpression(Expression *E) {
     assert((E) && "null ptr at expressions array while init");
-    for (int i = 0; i < MAX_ARRAY_SIZE; ++i) {
-        memset(E[i].varName, 0, MAX_V_NAME_SIZE);
+    for (int i = 0; i < 10; ++i) {
+        E[i].formula = (char **) malloc(100 * sizeof(char *));
+        E[i].dependencies = (char **) malloc(100 * sizeof(char *));
+        for (int j = 0; j < 100; ++j) {
+            E[i].formula[j] = (char *) malloc(10 * sizeof(char));
+            E[i].dependencies[j] = (char *) malloc(10 * sizeof(char));
+        }
+        E[i].varName = (char *) malloc(10 * sizeof(char));
         E[i].evenDependenciesCnt = 0;
         E[i].trueDependenciesCnt = 0;
-        for (int j = 0; j < MAX_E_SIZE; ++j) {
-            memset(E[i].formula[j], 0, MAX_V_NAME_SIZE);
-            memset(E[i].dependencies[j], 0, MAX_V_NAME_SIZE);
-
-        }
     }
 }
 
@@ -23,8 +24,12 @@ Expression *createExpressions() {
     return tmp;
 }
 
-int splitExpression(char *src, char dest[100][10], char divs[]) {
+int splitExpression(char *src, char **dest, char divs[]) {
     assert((src) && "given null str ptr");
+    char tmpStr[100][10];
+    for (int i = 0; i < 100; i++){
+        memset(tmpStr[i],0,10);
+    }
     int i = 0;
     int k = 0;
     int z = 0;
@@ -36,16 +41,22 @@ int splitExpression(char *src, char dest[100][10], char divs[]) {
             if (src[i] == divs[j]) dvF = 1;
         }
         if (!dvF) {
-            dest[k][z++] = src[i++];
+            tmpStr[k][z++] = src[i++];
             opF = 0;
         } else {
             z = 0;
             if (!opF) k++;
-            dest[k++][0] = src[i++];
+            tmpStr[k++][0] = src[i++];
             opF = 1;
         }
     }
+
+    for (int i = 0; i < 100; ++i) {
+        strcpy(dest[i], tmpStr[i]);
+    }
+
     while ((dest[k][0] == ' ' || dest[k][0] == '\t')) k--;
+
     return k + (dest[k][0] != 0);
 }
 
@@ -99,7 +110,14 @@ int parserReadExpressions(char *filename, Expression *e, int debug, int forceLow
     return number;
 }
 
-void destroyExpressionsArray(Expression *E) {
+void destroyExpressionsArray(Expression *E, int n) {
     assert((E) && "null ptr, lul, nothing to delete");
+    for(int i = 0; i < n; i++)
+    {for (int j = 0; j < 100; ++j) {
+        free(E[i].formula[j]);
+        free(E[i].dependencies[j]);
+    }
+    free(E[i].formula);
+    free(E[i].dependencies);}
     free(E);
 }

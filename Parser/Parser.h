@@ -16,9 +16,9 @@
 #define MAX_E_SIZE 100
 
 typedef struct Expression {
-    char varName[MAX_V_NAME_SIZE]; // name of var, null if expression is just a number
-    char formula[MAX_E_SIZE][MAX_V_NAME_SIZE]; // expression splitted to pseudo string
-    char dependencies[MAX_E_SIZE][MAX_V_NAME_SIZE]; //vars, on which expression depends, according to plain scanning
+    char *varName; // name of var, null if expression is just a number
+    char **formula; // expression splitted to pseudo string
+    char **dependencies; //vars, on which expression depends, according to plain scanning
     int evenDependenciesCnt; // num of dependencies after scan
     int trueDependenciesCnt; // num of dependencies after reverse+BFS
     int segCnt;
@@ -28,9 +28,9 @@ Expression *createExpressions();
 
 int parserReadExpressions(char *filename, Expression *parsedExpr, int debug, int forceLowerCase);
 
-void destroyExpressionsArray(Expression *E);
+void destroyExpressionsArray(Expression *E, int n);
 
-int splitExpression(char *str, char dest[100][10], char divs[]);
+int splitExpression(char *str, char **dest, char divs[]);
 
 int expressionIsValid(OpID *mask);
 

@@ -11,35 +11,22 @@
 int main() {
     /* Input Data Parser initialization */
     Expression *e = createExpressions();
-    int sz = parserReadExpressions("../input.txt", e, 0, 1);
+    int sz = parserReadExpressions("../input.txt", e, 1, 1);
     int n = e[0].segCnt;
 
     rpnProcessor *outputStack;
     outputStack = init();
 
-//////////////////////
-    char **kekt = (char **) malloc(100 * sizeof(char *));
-    for (int i = 0; i < 100; ++i) {
-        kekt[i] = (char *) malloc(10 * sizeof(char));
-    }
-
-    for (int i = 0; i < n; ++i) {
-        strcpy(kekt[i], e[0].formula[i]);
-        printf("'%s' ", kekt[i]);
-    }
-    printf("\n");
-//////////////////////
-
-    stPrint(rpnFunc(outputStack, kekt, n));
+    stPrint(rpnFunc(outputStack, e[0].formula, n));
 
     int size = sizeof(char[10]);
     Node *root = nodeInit(size);
-    opTreeGen(root, rpnFunc(outputStack, kekt, n));
+    opTreeGen(root, rpnFunc(outputStack, e[0].formula, n));
     opTreePrint(root);
     double complex result = opTreeCalc(root);
     printf(" = ");
     printNum(result);
 
-    destroyExpressionsArray(e);
+    destroyExpressionsArray(e, sz);
     return EXIT_SUCCESS;
 }
