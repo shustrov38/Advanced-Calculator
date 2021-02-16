@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "Stack/stack.h"
+#include "OpTree/tree.h"
 
 #include "Operations/ops.h"
 #include "RPN/RPN.h"
@@ -24,6 +25,17 @@ int main() {
 
     stPrint(rpnFunc(outputStack, eq, n));
 
+
+
+
+   /* int size = sizeof(char[10]);
+    Node *root = nodeInit(size);
+    opTreeGen(root, rpnFunc(outputStack, eq, n));
+    opTreePrint(root);
+    double complex result = opTreeCalc(root);
+    printf(" = ");
+    printNum(result);
+*/
 
 }
 
