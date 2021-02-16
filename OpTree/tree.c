@@ -17,37 +17,26 @@ void opTreeGen(Node *node, Stack *stack) {
     // recursive end condition
     if (stack->size == 0) return;
 
-    char *tmp = (char *) malloc(stack->elementSize);
-    strcpy(tmp, stTop(stack));
+    strcpy(node->value, stTop(stack));
     stPop(stack);
 
-    if (IS_OPER(tmp)) {
+    if (IS_OPER(node->value)) {
         node->state = OPERATION;
-    } else if (IS_FUNC_1ARG(tmp)) {
+    } else if (IS_FUNC_1ARG(node->value)) {
         node->state = FUNCTION1;
-    } else if (IS_FUNC_2ARG(tmp)) {
+    } else if (IS_FUNC_2ARG(node->value)) {
         node->state = FUNCTION2;
     } else /* var or const */ {
         node->state = BASIC;
     }
 
-    switch (node->state) {
-        case OPERATION:
-        case FUNCTION2:
-            strcpy(node->value, tmp);
-            node->right = nodeInit(node->elementSize);
-            opTreeGen(node->right, stack);
+    if (node->state != BASIC) {
+        node->right = nodeInit(node->elementSize);
+        opTreeGen(node->right, stack);
+        if (node->state != FUNCTION1) {
             node->left = nodeInit(node->elementSize);
             opTreeGen(node->left, stack);
-            break;
-        case FUNCTION1:
-            strcpy(node->value, tmp);
-            node->right = nodeInit(node->elementSize);
-            opTreeGen(node->right, stack);
-            break;
-        case BASIC:
-            strcpy(node->value, tmp);
-            break;
+        }
     }
 }
 
@@ -102,9 +91,10 @@ double complex opTreeCalc(Node *node) {
         case J:
             return _j();
         case VAR:
+            // here must be search of the variable
             return toComplex(node->value);
         default:
-            return 0;
+            return toComplex(node->value);
     }
 }
 
@@ -134,4 +124,21 @@ void opTreePrint(Node *node) {
             printf("%s", node->value);
             break;
     }
+}
+
+void exampleRun() {
+    int size = sizeof(char[10]);
+    Stack *stack = stCreate(size);
+    stPush(stack, "e");
+    stPush(stack, "1.23");
+    stPush(stack, "+");
+    stPush(stack, "ln");
+    stPush(stack, "sin");
+    stPrint(stack);
+    Node *root = nodeInit(size);
+    opTreeGen(root, stack);
+    opTreePrint(root);
+    double complex result = opTreeCalc(root);
+    printf(" = ");
+    printNum(result);
 }

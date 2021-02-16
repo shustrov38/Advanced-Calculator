@@ -33,20 +33,6 @@ double complex opTreeCalc(Node *node);
 
 void opTreePrint(Node *node);
 
-/*
-    // example to present tree
-    int size = sizeof(char[10]);
-    Stack *stack = stCreate(size);
-    stPush(stack, "3");
-    stPush(stack, "a");
-    stPush(stack, "b");
-    stPush(stack, "+");
-    stPush(stack, "ln");
-    stPush(stack, "log");
-    stPrint(stack);
-    Node *root = nodeInit(size);
-    opTreeGen(root, stack);
-    opTreePrint(root);
-*/
+void exampleRun();
 
 #endif //ADVANCED_CALCULATOR_TREE_H
