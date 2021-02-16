@@ -42,7 +42,7 @@ void opTreeGen(Node *node, Stack *stack) {
 
 double complex opTreeCalc(Node *node) {
     if (node == NULL) return 0;
-    double complex a = opTreeCalc(node->right), b = opTreeCalc(node->left);
+    double complex a = opTreeCalc(node->left), b = opTreeCalc(node->right);
     switch (getOpID(node->value)) {
         case PLS:
             return _sum(a, b);
@@ -57,27 +57,27 @@ double complex opTreeCalc(Node *node) {
         case PWR:
             return _pwr(a, b);
         case SIN:
-            return _sin(a);
+            return _sin(b);
         case COS:
-            return _cos(a);
+            return _cos(b);
         case LN:
-            return _ln(a);
+            return _ln(b);
         case LOG:
-            return _log(a);
+            return _log(b);
         case SQRT:
-            return _sqrt(a);
+            return _sqrt(b);
         case ABS:
-            return _abs(a);
+            return _abs(b);
         case EXP:
-            return _exp(a);
+            return _exp(b);
         case REAL:
-            return _real(a);
+            return _real(b);
         case IMAG:
-            return _imag(a);
+            return _imag(b);
         case MAG:
-            return _mag(a);
+            return _mag(b);
         case PHASE:
-            return _phase(a);
+            return _phase(b);
         case POW:
             return _pow(a, b);
         case MAX:
@@ -103,9 +103,9 @@ void opTreePrint(Node *node) {
     switch (node->state) {
         case OPERATION:
             printf("(");
-            opTreePrint(node->right);
-            printf("%s", node->value);
             opTreePrint(node->left);
+            printf("%s", node->value);
+            opTreePrint(node->right);
             printf(")");
             break;
         case FUNCTION1:
@@ -115,9 +115,9 @@ void opTreePrint(Node *node) {
             break;
         case FUNCTION2:
             printf("%s(", node->value);
-            opTreePrint(node->right);
-            printf(",");
             opTreePrint(node->left);
+            printf(",");
+            opTreePrint(node->right);
             printf(")");
             break;
         case BASIC:

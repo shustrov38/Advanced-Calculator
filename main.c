@@ -18,24 +18,16 @@ int main() {
         scanf("%s", eq[i]);
     }
 
-
     rpnProcessor *outputStack;
     outputStack = init();
 
-
     stPrint(rpnFunc(outputStack, eq, n));
 
-
-
-
-//    int size = sizeof(char[10]);
-//    Node *root = nodeInit(size);
-//    opTreeGen(root, rpnFunc(outputStack, eq, n));
-//    opTreePrint(root);
-//    double complex result = opTreeCalc(root);
-//    printf(" = ");
-//    printNum(result);
-
-
+    int size = sizeof(char[10]);
+    Node *root = nodeInit(size);
+    opTreeGen(root, rpnFunc(outputStack, eq, n));
+    opTreePrint(root);
+    double complex result = opTreeCalc(root);
+    printf(" = ");
+    printNum(result);
 }
-
