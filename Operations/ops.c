@@ -122,6 +122,7 @@ Priority getOpPriority(OpID id) {
         default:
             return NONE;
     }
+
 }
 
 double complex toComplex(char *str) {
@@ -263,4 +264,5 @@ double complex _euler() {
 
 double complex _j() {
     return I;
+
 }

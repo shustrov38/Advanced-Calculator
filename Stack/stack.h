@@ -2,6 +2,9 @@
 #define ADVANCED_CALCULATOR_STACK_H
 
 
+
+
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <malloc.h>
@@ -16,7 +19,11 @@ typedef struct {
     char **data;
 } Stack;
 
+
+Stack *stCreate();
+
 Stack *stCreate(int elementSize);
+
 
 void stPush(Stack *stack, char *data);
 
@@ -29,3 +36,4 @@ void stResize(Stack *stack, int newCap);
 void stPrint(Stack *stack);
 
 #endif //ADVANCED_CALCULATOR_STACK_H
+

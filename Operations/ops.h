@@ -1,7 +1,6 @@
 #ifndef ADVANCED_CALCULATOR_OPS_H
 #define ADVANCED_CALCULATOR_OPS_H
 
-
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -66,6 +65,7 @@ typedef enum {
 OpID getOpID(char *op);
 
 Priority getOpPriority(OpID id);
+
 
 #define eps 1e-6
 
@@ -147,6 +147,5 @@ double complex _euler();
 double complex _j();
 
 #pragma endregion CONSTANTS
-
 
 #endif //ADVANCED_CALCULATOR_OPS_H
