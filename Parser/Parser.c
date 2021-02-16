@@ -42,6 +42,7 @@ void **splitExpression(char *src, char dest[100][10], char divs[]){
             z = 0;
             if (!opF) k++;
             dest[k++][0] = src[i++];
+            opF = 1;
         }
     }
 }
@@ -54,6 +55,9 @@ void parserReadExpressions(char *filename, Expression *e, int debug, int forceLo
     int number = 0;
     while (!feof(in)) {
         fgets(buffStr, MAX_E_SIZE, in);
+        for (int i = 0; i< strlen(buffStr); ++i){
+            if (forceLowerCase && buffStr[i] >= 'A' && buffStr[i] <= 'Z') buffStr[i] += ('a' - 'A');
+        }
         splitExpression(buffStr, e[number].formula, "=-+/*^,%");
         if(e[number].formula[0] && !strcmp(e[number].formula[1],"=")) {
             strcpy(e[number].varName,e[number].formula[0]);
