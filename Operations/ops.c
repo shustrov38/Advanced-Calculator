@@ -1,6 +1,21 @@
 #include "ops.h"
 
 OpID getOpID(char *op) {
+    // extra options
+    if (!strcmp(op, "="))
+        return PLS;
+
+    if (!strcmp(op, "("))
+        return OPB;
+
+    if (!strcmp(op, ")"))
+        return CLB;
+
+    if (!strcmp(op, ","))
+        return COM;
+
+    if ('0' <= op[0] && op[0] <= '9')
+        return NUM;
 
     // arithmetic operations
     if (!strcmp(op, "+"))

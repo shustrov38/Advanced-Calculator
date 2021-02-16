@@ -7,11 +7,9 @@
 #include <stdlib.h>
 
 #define _GNU_SOURCE
-
 #include <complex.h>
 
 #define _USE_MATH_DEFINES
-
 #include <math.h>
 
 // start enum index for operations
@@ -44,6 +42,7 @@
 #define PRIORITY(X) (getOpPriority(getOpID(X)))
 
 typedef enum {
+    EQL, OPB, CLB, COM, NUM,
     OPERATIONS = OPS_H_OPERATIONS,
     PLS, MNS, MUL, DIV, MOD, PWR,
     FUNCTIONS_1ARG = OPS_H_FUNCTIONS_1ARG,
