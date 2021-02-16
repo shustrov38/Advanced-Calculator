@@ -30,7 +30,7 @@ int splitExpression(char *src, char dest[100][10], char divs[]) {
     int z = 0;
     int opF = 1;
     while (src[i] != '\n' && src[i] != '\0') {
-        if (i < strlen(src) - 1 && src[i] == ' ') i++;
+        while (i < strlen(src) - 1 && (src[i] == ' ' || src[i] == '\t')) i++;
         int dvF = 0;
         for (int j = 0; j < strlen(divs); j++) {
             if (src[i] == divs[j]) dvF = 1;
@@ -45,6 +45,7 @@ int splitExpression(char *src, char dest[100][10], char divs[]) {
             opF = 1;
         }
     }
+    while ((dest[k][0] == ' ' || dest[k][0] == '\t')) k--;
     return k + (dest[k][0] != 0);
 }
 

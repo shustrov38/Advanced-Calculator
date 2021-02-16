@@ -266,5 +266,4 @@ double complex _euler() {
 
 double complex _j() {
     return I;
-
 }
