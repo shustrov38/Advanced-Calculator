@@ -14,6 +14,4 @@ typedef struct {
 
 rpnProcessor* init();
 
-int getOpPriorityNum(char *op);
-
 Stack* rpnFunc(rpnProcessor *stack, char** string, int size);
