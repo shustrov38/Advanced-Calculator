@@ -25,17 +25,15 @@ int main() {
 
     for (int i = 0; i < n; ++i) {
         strcpy(kekt[i], e[0].formula[i]);
-        printf("'%s' ", kekt[i]);
     }
-    printf("\n");
 //////////////////////
 
-    stPrint(rpnFunc(outputStack, kekt, n));
+//    stPrint(rpnFunc(outputStack, kekt, n));
 
     int size = sizeof(char[10]);
     Node *root = nodeInit(size);
     opTreeGen(root, rpnFunc(outputStack, kekt, n));
-    opTreePrint(root);
+    opTreePrint(root, NULL);
     double complex result = opTreeCalc(root);
     printf(" = ");
     printNum(result);
