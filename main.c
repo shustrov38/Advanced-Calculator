@@ -10,5 +10,6 @@ int main() {
     Expression *e = createExpressions();
     parserReadExpressions("../input.txt", e,1,1);
     if(1){};
+    destroyExpressionsArray(e);
     return 0;
 }

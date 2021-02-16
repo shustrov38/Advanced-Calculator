@@ -23,42 +23,38 @@ Expression *createExpressions() {
     return tmp;
 };
 
+void **splitExpression(char *src, char dest[100][10], char divs[]){
+    int i = 0;
+    int k = 0;
+    int z = 0;
+    int opF = 1;
+    while(src[i] !='\n' && src[i]!='\0'){
+        if (i<strlen(src)-1 && src[i] == ' ') i++;
+        int dvF = 0;
+        for (int j = 0; j < strlen(divs); j++){
+            if (src[i] == divs[j]) dvF = 1;
+        }
+        if (!dvF){
+            opF = 0;
+            dest[k][z++] = src[i++];
+        }
+        else{
+            z = 0;
+            if (!opF) k++;
+            dest[k++][0] = src[i++];
+        }
+    }
+}
+
 void parserReadExpressions(char *filename, Expression *e, int debug, int forceLowerCase) {
     FILE *in = fopen(filename, "r");
     assert((in) && "null file ptr, error while reading");
+    assert((e) && "null ptr of struct");
     char buffStr[MAX_E_SIZE];
-    //char buffPseudoStr[MAX_E_SIZE][MAX_E_SIZE];
     int number = 0;
     while (!feof(in)) {
         fgets(buffStr, MAX_E_SIZE, in);
-        int elementIndex = 0;
-        int i = 0;
-        int j = 0;
-        int opF = 1;
-        while (buffStr[i] != '\n' && buffStr[i] != '\0') {
-            if (i<strlen(buffStr)-1 && buffStr[i] == ' ') i++;
-            if (forceLowerCase && buffStr[i] >= 'A' && buffStr[i] <= 'Z') buffStr[i] += ('a' - 'A');
-            if (!((buffStr[i] >= 'a' && buffStr[i] <= 'z')||(buffStr[i] >= '0' && buffStr[i] <= '9')||(buffStr[i] == ')'
-            || buffStr[i] == '(' || buffStr[i] == ',' || buffStr[i] == '+' || buffStr[i] == '-' ||
-            buffStr[i] == '/' || buffStr[i] == '*' || buffStr[i] == '^' || buffStr[i] == '=' || buffStr[i] == '%' ||
-            buffStr[i] == '.'))){
-                printf("unknown char");
-                exit(-1);
-            };
-            if (buffStr[i] != ')' && buffStr[i] != '(' && buffStr[i] != ',' && buffStr[i] != '+' && buffStr[i] != '-' &&
-                buffStr[i] != '/' && buffStr[i] != '*' && buffStr[i] != '^' && buffStr[i] != '=' && buffStr[i] != '%') {
-                opF = 0;
-                e[number].formula[elementIndex][j] = buffStr[i];
-                ++j;
-            } else {
-                j = 0;
-                if (!opF) ++elementIndex;
-                opF = 1;
-                e[number].formula[elementIndex][0] = buffStr[i];
-                ++elementIndex;
-            }
-            ++i;
-        };
+        splitExpression(buffStr, e[number].formula, "=-+/*^,%");
         if(e[number].formula[0] && !strcmp(e[number].formula[1],"=")) {
             strcpy(e[number].varName,e[number].formula[0]);
         }
@@ -72,4 +68,9 @@ void parserReadExpressions(char *filename, Expression *e, int debug, int forceLo
         ++number;
     };
     fclose(in);
+}
+
+void destroyExpressionsArray(Expression *E){
+    assert((E) && "null ptr, lul, nothing to delete");
+    free(E);
 }
