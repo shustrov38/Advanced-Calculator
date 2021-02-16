@@ -64,9 +64,11 @@ void parserReadExpressions(char *filename, Expression *e, int debug, int forceLo
         }
         int i = 0;
         int j = 0;
-        while(e[number].formula[i][0]!='\0'){
-            if(getOpID(e[number].formula[i])==VAR && strcmp(e[number].formula[i],e[number].varName)){
-                strcpy(e[number].dependencies[j++],e[number].formula[i]);
+        while (e[number].formula[i][0] != '\0') {
+            assert(getOpID(e[number].formula[i]) && "null opId");
+            if (getOpID(e[number].formula[i]) == VAR && strcmp(e[number].formula[i], e[number].varName)) {
+                strcpy(e[number].dependencies[j++], e[number].formula[i]);
+                assert(e[number].dependencies[j - 1] && "null str after strcpy at building dependencies");
                 e[number].evenDependenciesCnt++;
             }
             i++;
@@ -77,11 +79,13 @@ void parserReadExpressions(char *filename, Expression *e, int debug, int forceLo
                 printf("%s ", e[number].formula[i]);
             }
             printf("] ");
-            printf("dependencies are:( ", e[number].varName, number + 1);
-            for (int i = 0; i < MAX_E_SIZE && e[number].dependencies[i][0] != '\0'; ++i) {
-                printf("%s ", e[number].dependencies[i]);
-            }
-            printf(") with total of %d even dependencies \n",e[number].evenDependenciesCnt);
+            if (e[number].evenDependenciesCnt > 0) {
+                printf("dependencies are: ", e[number].varName, number + 1);
+                for (int i = 0; i < e[number].evenDependenciesCnt; ++i) {
+                    printf("%s ", e[number].dependencies[i]);
+                }
+                printf("; %d even dependencies \n", e[number].evenDependenciesCnt);
+            } else printf("without dependencies\n");
         }
         ++number;
     };

@@ -9,5 +9,6 @@ int main() {
     /* Input Data Parser initialization */
     Expression *e = createExpressions();
     parserReadExpressions("../input.txt", e,1,1);
+    destroyExpressionsArray(e);
     return 0;
 }
