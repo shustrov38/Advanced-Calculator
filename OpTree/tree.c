@@ -17,43 +17,32 @@ void opTreeGen(Node *node, Stack *stack) {
     // recursive end condition
     if (stack->size == 0) return;
 
-    char *tmp = (char *) malloc(stack->elementSize);
-    strcpy(tmp, stTop(stack));
+    strcpy(node->value, stTop(stack));
     stPop(stack);
 
-    if (IS_OPER(tmp)) {
+    if (IS_OPER(node->value)) {
         node->state = OPERATION;
-    } else if (IS_FUNC_1ARG(tmp)) {
+    } else if (IS_FUNC_1ARG(node->value)) {
         node->state = FUNCTION1;
-    } else if (IS_FUNC_2ARG(tmp)) {
+    } else if (IS_FUNC_2ARG(node->value)) {
         node->state = FUNCTION2;
     } else /* var or const */ {
         node->state = BASIC;
     }
 
-    switch (node->state) {
-        case OPERATION:
-        case FUNCTION2:
-            strcpy(node->value, tmp);
-            node->right = nodeInit(node->elementSize);
-            opTreeGen(node->right, stack);
+    if (node->state != BASIC) {
+        node->right = nodeInit(node->elementSize);
+        opTreeGen(node->right, stack);
+        if (node->state != FUNCTION1) {
             node->left = nodeInit(node->elementSize);
             opTreeGen(node->left, stack);
-            break;
-        case FUNCTION1:
-            strcpy(node->value, tmp);
-            node->right = nodeInit(node->elementSize);
-            opTreeGen(node->right, stack);
-            break;
-        case BASIC:
-            strcpy(node->value, tmp);
-            break;
+        }
     }
 }
 
 double complex opTreeCalc(Node *node) {
     if (node == NULL) return 0;
-    double complex a = opTreeCalc(node->right), b = opTreeCalc(node->left);
+    double complex a = opTreeCalc(node->left), b = opTreeCalc(node->right);
     switch (getOpID(node->value)) {
         case PLS:
             return _sum(a, b);
@@ -67,28 +56,34 @@ double complex opTreeCalc(Node *node) {
             return _mod(a, b);
         case PWR:
             return _pwr(a, b);
+        case AND:
+            return _and(a, b);
+        case OR:
+            return _or(a, b);
+        case XOR:
+            return _xor(a, b);
         case SIN:
-            return _sin(a);
+            return _sin(b);
         case COS:
-            return _cos(a);
+            return _cos(b);
         case LN:
-            return _ln(a);
+            return _ln(b);
         case LOG:
-            return _log(a);
+            return _log(b);
         case SQRT:
-            return _sqrt(a);
+            return _sqrt(b);
         case ABS:
-            return _abs(a);
+            return _abs(b);
         case EXP:
-            return _exp(a);
+            return _exp(b);
         case REAL:
-            return _real(a);
+            return _real(b);
         case IMAG:
-            return _imag(a);
+            return _imag(b);
         case MAG:
-            return _mag(a);
+            return _mag(b);
         case PHASE:
-            return _phase(a);
+            return _phase(b);
         case POW:
             return _pow(a, b);
         case MAX:
@@ -102,32 +97,35 @@ double complex opTreeCalc(Node *node) {
         case J:
             return _j();
         case VAR:
+            // here must be search of the variable
             return toComplex(node->value);
         default:
-            return 0;
+            return toComplex(node->value);
     }
 }
 
-void opTreePrint(Node *node) {
+void opTreePrint(Node *node, Node *parent) {
     if (node == NULL) return;
+    int need;
     switch (node->state) {
         case OPERATION:
-            printf("(");
-            opTreePrint(node->right);
+            need = (parent != NULL) && (PRIORITY(node->value) == SUM && PRIORITY(parent->value) == PROD);
+            if (need) printf("(");
+            opTreePrint(node->left, node);
             printf("%s", node->value);
-            opTreePrint(node->left);
-            printf(")");
+            opTreePrint(node->right, node);
+            if (need) printf(")");
             break;
         case FUNCTION1:
             printf("%s(", node->value);
-            opTreePrint(node->right);
+            opTreePrint(node->right, node);
             printf(")");
             break;
         case FUNCTION2:
             printf("%s(", node->value);
-            opTreePrint(node->right);
+            opTreePrint(node->left, node);
             printf(",");
-            opTreePrint(node->left);
+            opTreePrint(node->right, node);
             printf(")");
             break;
         case BASIC:

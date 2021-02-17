@@ -4,49 +4,69 @@
 
 void initExpression(Expression *E) {
     assert((E) && "null ptr at expressions array while init");
-    for (int i = 0; i < MAX_ARRAY_SIZE; ++i) {
-        memset(E[i].varName, 0, MAX_V_NAME_SIZE);
+    for (int i = 0; i < 10; ++i) {
+        E[i].formula = (char **) malloc(100 * sizeof(char *));
+        E[i].dependencies = (char **) malloc(100 * sizeof(char *));
+        for (int j = 0; j < 100; ++j) {
+            E[i].formula[j] = (char *) malloc(10 * sizeof(char));
+            E[i].dependencies[j] = (char *) malloc(10 * sizeof(char));
+        }
+        E[i].varName = (char *) malloc(10 * sizeof(char));
         E[i].evenDependenciesCnt = 0;
         E[i].trueDependenciesCnt = 0;
+
         for (int j = 0; j < MAX_E_SIZE; ++j) {
             memset(E[i].formula[j], 0, MAX_V_NAME_SIZE);
             memset(E[i].dependencies[j], 0, MAX_V_NAME_SIZE);
         }
+
     }
-};
+}
 
 Expression *createExpressions() {
     Expression *tmp = (Expression *) malloc(MAX_ARRAY_SIZE * sizeof(Expression));
     assert((tmp) && "null ptr at creating expressions array");
     initExpression(tmp);
     return tmp;
-};
+}
 
-void splitExpression(char *src, char dest[100][10], char divs[]) {
+int splitExpression(char *src, char **dest, char divs[]) {
     assert((src) && "given null str ptr");
+    char tmpStr[100][10];
+    for (int i = 0; i < 100; i++) {
+        memset(tmpStr[i], 0, 10);
+    }
     int i = 0;
     int k = 0;
     int z = 0;
     int opF = 1; //is op flag for ch
     while (src[i] != '\n' && src[i] != '\0') {
-        if (i < strlen(src) - 1 && src[i] == ' ') i++;
-        int dvF = 0; //is divided flag
+        while (i < strlen(src) - 1 && (src[i] == ' ' || src[i] == '\t')) i++;
+        int dvF = 0;
         for (int j = 0; j < strlen(divs); j++) {
             if (src[i] == divs[j]) dvF = 1;
         }
         if (!dvF) {
-            dest[k][z++] = src[i++];
+            tmpStr[k][z++] = src[i++];
             opF = 0;
         } else {
             z = 0;
             if (!opF) k++;
-            dest[k++][0] = src[i++];
+            tmpStr[k++][0] = src[i++];
             opF = 1;
         }
     }
+
+    for (int i = 0; i < 100; ++i) {
+        strcpy(dest[i], tmpStr[i]);
+    }
+
+    while ((dest[k][0] == ' ' || dest[k][0] == '\t')) k--;
+
+    return k + (dest[k][0] != 0);
 }
 
-void parserReadExpressions(char *filename, Expression *e, int debug, int forceLowerCase) {
+int parserReadExpressions(char *filename, Expression *e, int debug, int forceLowerCase) {
     FILE *in = fopen(filename, "r");
     assert((in) && "null file ptr, error while reading");
     assert((e) && "null ptr of struct");
@@ -57,9 +77,15 @@ void parserReadExpressions(char *filename, Expression *e, int debug, int forceLo
         for (int i = 0; i < strlen(buffStr); ++i) {
             if (forceLowerCase && buffStr[i] >= 'A' && buffStr[i] <= 'Z') buffStr[i] += ('a' - 'A');
         }
-        splitExpression(buffStr, e[number].formula, "()=-+/*^,%");
+        e[number].segCnt = splitExpression(buffStr, e[number].formula, "()=-+/*^,%&|@");
         if (e[number].formula[0] && !strcmp(e[number].formula[1], "=")) {
             strcpy(e[number].varName, e[number].formula[0]);
+            for (int segI = 0; segI < e[number].segCnt - 2; segI++) {
+                strcpy(e[number].formula[segI], e[number].formula[segI + 2]);
+            }
+            memset(e[number].formula[e[number].segCnt - 1], 0, 100);
+            memset(e[number].formula[e[number].segCnt - 2], 0, 100);
+            e[number].segCnt -= 2;
         }
         int i = 0;
         int j = 0;
@@ -87,11 +113,21 @@ void parserReadExpressions(char *filename, Expression *e, int debug, int forceLo
             } else printf("without dependencies\n");
         }
         ++number;
-    };
+    }
     fclose(in);
+    return number;
 }
 
 void destroyExpressionsArray(Expression *E) {
     assert((E) && "null ptr, lul, nothing to delete");
+    for (int i = 0; i < 10; i++) {
+        for (int j = 0; j < 100; ++j) {
+            free(E[i].formula[j]);
+            free(E[i].dependencies[j]);
+        }
+        free(E[i].varName);
+        free(E[i].formula);
+        free(E[i].dependencies);
+    }
     free(E);
 }
