@@ -1,25 +1,22 @@
 #include <stdio.h>
+#include <string.h>
+
+#include "Operations/ops.h"
+#include "Stack/stack.h"
+
+#include "Parser/Parser.h"
 #include "Graph/graph.h"
 
 int main() {
-    int n, m;
-    scanf("%d%d", &n, &m);
-
-    int **g = (int**) malloc(n * sizeof(int*));
-    for (int i = 0; i < n; i++) {
-        g[i] = (int*) malloc(n * sizeof(int));
-        memset(g[i], 0, n * sizeof(int));
+    /* Input Data Parser initialization */
+    Expression *e = createExpressions();
+    int n = parserReadExpressions("../input.txt", e, 1, 1);
+    Graph *graph = grCreate(e, n);
+    printGraph(graph->g, graph->n);
+    gResult *res = gProcess(graph->g, graph->n);
+    printf("dependency:\n");
+    for (int i = 0; i < graph->n; ++i) {
+        printf("%d ", res->cnt[i]);
     }
-
-    for (int i = 0; i < m; ++i) {
-        int u, v;
-        scanf("%d%d", &u, &v);
-        g[u-1][v-1] = 1;
-    }
-
-//    transpose(g, n);
-
-    gProcess(g, n);
-
-//    printGraph(g , n);
+    return EXIT_SUCCESS;
 }

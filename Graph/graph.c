@@ -1,5 +1,56 @@
 #include "graph.h"
 
+Graph *grCreate(Expression *e, int n) {
+    Graph *graph = (Graph *) malloc(sizeof(Graph));
+    assert(graph != NULL && "bad mem allocate");
+
+    graph->n = 0;
+    graph->variables = (char **) malloc(n * sizeof(char *));
+    assert(graph->variables != NULL && "bad mem allocate");
+    for (int i = 0; i < n; ++i) {
+        graph->variables[i] = (char *) malloc(10 * sizeof(char));
+        assert(graph->variables[i] != NULL && "bad mem allocate");
+        memset(graph->variables[i], 0, 10);
+    }
+
+    // TODO: check for identical name
+    for (int i = 0; i < n; ++i) {
+        if (strlen(e[i].varName)) {
+            strcpy(graph->variables[graph->n++], e[i].varName);
+        }
+    }
+
+    graph->g = (int **) malloc(n * sizeof(int *));
+    assert(graph->g != NULL && "bad mem allocate");
+    for (int i = 0; i < n; ++i) {
+        graph->g[i] = (int *) malloc(n * sizeof(int));
+        assert(graph->g[i] != NULL && "bad mem allocate");
+        memset(graph->g[i], 0, n * sizeof(int));
+    }
+
+    for (int i = 0; i < n; ++i) {
+        if (!strlen(e[i].varName)) continue;
+        int A = 0, B = 0;
+        for (; A < graph->n; ++A) {
+            if (!strcmp(graph->variables[A], e[i].varName)) {
+                break;
+            }
+        }
+        for (int j = 0; j < e[i].segCnt; ++j) {
+            for (; B < graph->n; ++B) {
+                if (!strcmp(graph->variables[B], e[i].dependencies[j])) {
+                    break;
+                }
+            }
+            if (A != B) {
+                graph->g[A][B] = 1;
+            }
+        }
+    }
+
+    return graph;
+}
+
 void transpose(int **g, int n) {
     for (int i = 0; i < n; ++i) {
         for (int j = i; j < n; ++j) {
@@ -10,34 +61,25 @@ void transpose(int **g, int n) {
     }
 }
 
-int size(int **g, int n, int v) {
-    int k = 0;
-    for (int u = 0; u < n; ++u) {
-        if (g[v][u]) {
-            k++;
-        }
-    }
-    return k;
-}
-
-void dfs(int **g, int *used, int n, int v, gResult *res) {
+int dfs(int **g, int *used, int n, int v, gResult *res) {
     used[v] = 1;
 
-    if (size(g, n, v) == 0) {
-        res->cnt[v] = 0;
-    }
-
-    for (int u = 0; u < n; ++u) {
-        if (g[v][u] && !used[u]) {
-            dfs(g, used, n, u, res);
-        }
-    }
-
     for (int u = 0; u < n; ++u) {
         if (g[v][u]) {
+            if (used[u] == 0) {
+                res->p[u] = v;
+                return dfs(g, used, n, u, res);
+            } else if (used[u] == 1) {
+                res->cycleEnd = v;
+                res->cycleStart = u;
+                return 1;
+            }
             res->cnt[v] += res->cnt[u] + 1;
         }
     }
+
+    used[v] = 2;
+    return 0;
 }
 
 gResult *gProcess(int **g, int n) {
@@ -48,25 +90,34 @@ gResult *gProcess(int **g, int n) {
     assert(res->cnt != NULL && "bad mem allocation");
     memset(res->cnt, 0, n * sizeof(int));
 
-    res->cSize = 0;
-    res->cycle = (int *) malloc(n * sizeof(int));
-    assert(res->cycle != NULL && "bad mem allocation");
-    memset(res->cycle, 0, n * sizeof(int));
+    res->p = (int *) malloc((n + 1) * sizeof(int));
+    assert(res->p != NULL && "bad mem allocation");
+    memset(res->p, -1, (n + 1) * sizeof(int));
+
+    res->size = 0;
+    res->cycleStart = -1;
+    res->cycleEnd = -1;
 
     int *used = (int *) malloc(n * sizeof(int));
     assert(used != NULL && "bad mem allocation");
     memset(used, 0, n * sizeof(int));
 
     for (int i = 0; i < n; ++i) {
-        if (!used[i]) {
-            dfs(g, used, n, i, res);
+        if (!used[i] && dfs(g, used, n, i, res)) {
+            break;
         }
     }
 
-    for (int i = 0; i < n; ++i) {
-        printf("%d ", res->cnt[i]);
+    if (res->cycleStart != -1) {
+        int cycle[n + 1];
+        for (int v = res->cycleEnd; v != -1; v = res->p[v]) {
+            cycle[res->size++] = v;
+        }
+        cycle[res->size++] = res->cycleEnd;
+        for (int i = res->size - 1; i >= 0; --i) {
+            res->p[res->size - 1 - i] = cycle[i];
+        }
     }
-    printf("\n");
 
     return res;
 }

@@ -7,11 +7,21 @@
 #include <string.h>
 #include "assert.h"
 
+#include "../Parser/Parser.h"
+
 typedef struct {
-    int *cnt;
-    int cSize;
-    int *cycle;
+    int *cnt, *p;
+    int size;
+    int cycleStart, cycleEnd;
 } gResult;
+
+typedef struct {
+    int n;
+    char **variables;
+    int **g;
+} Graph;
+
+Graph *grCreate(Expression *e, int n);
 
 void transpose(int **g, int n);
 
