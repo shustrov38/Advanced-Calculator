@@ -21,7 +21,7 @@ typedef struct {
     int **g;
 } Graph;
 
-Graph *grCreate(Expression *e, int n);
+void checkVariables(Expression *e, int n);
 
 void transpose(int **g, int n);
 

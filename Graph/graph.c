@@ -1,6 +1,6 @@
 #include "graph.h"
 
-Graph *grCreate(Expression *e, int n) {
+void checkVariables(Expression *e, int n) {
     Graph *graph = (Graph *) malloc(sizeof(Graph));
     assert(graph != NULL && "bad mem allocate");
 
@@ -15,9 +15,8 @@ Graph *grCreate(Expression *e, int n) {
 
     // TODO: check for identical name
     for (int i = 0; i < n; ++i) {
-        if (strlen(e[i].varName)) {
-            strcpy(graph->variables[graph->n++], e[i].varName);
-        }
+        if (!strlen(e[i].varName)) continue;
+        strcpy(graph->variables[graph->n++], e[i].varName);
     }
 
     graph->g = (int **) malloc(n * sizeof(int *));
@@ -43,20 +42,35 @@ Graph *grCreate(Expression *e, int n) {
                 }
             }
             if (A != B) {
+                // add edge
                 graph->g[A][B] = 1;
             }
         }
     }
 
-    return graph;
-}
+    printGraph(graph->g, graph->n);
+    gResult *res = gProcess(graph->g, graph->n);
 
-void transpose(int **g, int n) {
-    for (int i = 0; i < n; ++i) {
-        for (int j = i; j < n; ++j) {
-            int temp = g[i][j];
-            g[i][j] = g[j][i];
-            g[j][i] = temp;
+    // has cycle
+    if (res->size) {
+        fprintf(stderr, "Have cycle in variable definition: ");
+        for (int i = 0; i < res->size; ++i) {
+            fprintf(stderr,"%s", graph->variables[res->p[i]]);
+            if (i + 1 != res->size) {
+                fprintf(stderr, " -> ");
+            }
+        }
+        exit(-1);
+    }
+
+    for (int i = 0; i < graph->n; ++i) {
+        for (int j = 0; j < n; ++j) {
+            if (!strlen(e[j].varName)) {
+                e[j].trueDependenciesCnt = n + 1;
+            } else if (!strcmp(graph->variables[i], e[j].varName)) {
+                e[j].trueDependenciesCnt = res->cnt[i];
+                break;
+            }
         }
     }
 }
@@ -110,10 +124,10 @@ gResult *gProcess(int **g, int n) {
 
     if (res->cycleStart != -1) {
         int cycle[n + 1];
+        cycle[res->size++] = res->cycleStart;
         for (int v = res->cycleEnd; v != -1; v = res->p[v]) {
             cycle[res->size++] = v;
         }
-        cycle[res->size++] = res->cycleEnd;
         for (int i = res->size - 1; i >= 0; --i) {
             res->p[res->size - 1 - i] = cycle[i];
         }
