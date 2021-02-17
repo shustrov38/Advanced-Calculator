@@ -5,12 +5,15 @@
 #ifndef ADVANCED_CALCULATOR_PARSER_H
 #define ADVANCED_CALCULATOR_PARSER_H
 
+
 #include <stdio.h>
 #include <malloc.h>
 #include <string.h>
 #include <stdlib.h>
 #include "assert.h"
 #include "../Operations/ops.h"
+
+#define PARSE_ERROR(...) fprintf(stderr, "\n"__VA_ARGS__); exit(-1)
 
 #define MAX_V_NAME_SIZE 10
 #define MAX_E_SIZE 100

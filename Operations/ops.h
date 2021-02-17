@@ -25,6 +25,9 @@
 // check if (X) is variable
 #define IS_VAR(X) (OPS_H_VARIABLE == getOpID(X))
 
+//check if (X) is number
+#define IS_NUM(X) (NUM == getOpID(X))
+
 // check if (X) is operation
 #define IS_OPER(X) (OPS_H_OPERATIONS < getOpID(X) && getOpID(X) < OPS_H_FUNCTIONS_1ARG)
 
