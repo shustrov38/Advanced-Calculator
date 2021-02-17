@@ -1,41 +1,33 @@
 #include <stdio.h>
 #include <string.h>
-#include "Stack/stack.h"
-#include "OpTree/tree.h"
 
 #include "Operations/ops.h"
+#include "Stack/stack.h"
+
+#include "Parser/Parser.h"
 #include "RPN/RPN.h"
+#include "OpTree/tree.h"
 
 int main() {
-    char **eq;
-    eq = (char **) malloc(sizeof(char *) * 100);
-    for (int i = 0; i < 100; i++) {
-        eq[i] = (char *) malloc(sizeof(char) * 100);
-    }
-    int n;
-    scanf("%d", &n);
-    for (int i = 0; i < n; i++) {
-        scanf("%s", eq[i]);
-    }
-
+    /* Input Data Parser initialization */
+    Expression *e = createExpressions();
+    int sz = parserReadExpressions("../input.txt", e, 1, 1);
+    int n = e[0].segCnt;
 
     rpnProcessor *outputStack;
     outputStack = init();
 
+    stPrint(rpnFunc(outputStack, e[0].formula, n));
 
-    stPrint(rpnFunc(outputStack, eq, n));
+    int size = sizeof(char[10]);
+    Node *root = nodeInit(size);
+    opTreeGen(root, rpnFunc(outputStack, e[0].formula, n));
+    opTreePrint(root, NULL);
 
+    double complex result = opTreeCalc(root);
+    printf(" = ");
+    printNum(result);
 
-
-
-//    int size = sizeof(char[10]);
-//    Node *root = nodeInit(size);
-//    opTreeGen(root, rpnFunc(outputStack, eq, n));
-//    opTreePrint(root);
-//    double complex result = opTreeCalc(root);
-//    printf(" = ");
-//    printNum(result);
-
-
+//    destroyExpressionsArray(e); //todo
+    return EXIT_SUCCESS;
 }
-

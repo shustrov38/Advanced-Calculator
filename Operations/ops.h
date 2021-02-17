@@ -43,7 +43,8 @@
 typedef enum {
     EQL, OPB, CLB, COM, NUM,
     OPERATIONS = OPS_H_OPERATIONS,
-    PLS, MNS, MUL, DIV, MOD, PWR,
+    PLS, MNS, MUL, DIV, MOD, PWR, // common operations
+    AND, OR, XOR, // binary operations
     FUNCTIONS_1ARG = OPS_H_FUNCTIONS_1ARG,
     SIN, COS, LN, LOG, SQRT, ABS, EXP, REAL, IMAG, MAG, PHASE,
     FUNCTIONS_2ARG = OPS_H_FUNCTIONS_2ARG,
@@ -100,6 +101,12 @@ double complex _mod(double complex a, double complex b);
 
 double complex _pwr(double complex a, double complex b);
 
+double complex _and(double complex a, double complex b);
+
+double complex _or(double complex a, double complex b);
+
+double complex _xor(double complex a, double complex b);
+
 #pragma endregion OPERATIONS
 
 #pragma region FUNCTIONS_1ARG
@@ -147,5 +154,6 @@ double complex _euler();
 double complex _j();
 
 #pragma endregion CONSTANTS
+
 
 #endif //ADVANCED_CALCULATOR_OPS_H
