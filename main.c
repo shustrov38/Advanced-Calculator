@@ -12,5 +12,12 @@ int main() {
     Expression *e = createExpressions();
     int n = parserReadExpressions("../input.txt", e, 1, 1);
     checkVariables(e, n);
+    for (int i = 0; i < n; ++i) {
+        if (strlen(e[i].varName)) {
+            printf("%s %d\n", e[i].varName, e[i].trueDependenciesCnt);
+        } else {
+            printf("expression");
+        }
+    }
     return EXIT_SUCCESS;
 }

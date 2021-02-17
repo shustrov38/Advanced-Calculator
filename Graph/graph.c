@@ -1,5 +1,11 @@
 #include "graph.h"
 
+static int compare(const void *a, const void *b) {
+    int aDep = ((Expression *)a)->trueDependenciesCnt;
+    int bDep = ((Expression *)b)->trueDependenciesCnt;
+    return aDep - bDep;
+}
+
 void checkVariables(Expression *e, int n) {
     Graph *graph = (Graph *) malloc(sizeof(Graph));
     assert(graph != NULL && "bad mem allocate");
@@ -27,6 +33,12 @@ void checkVariables(Expression *e, int n) {
         memset(graph->g[i], 0, n * sizeof(int));
     }
 
+//    printf("variables: ");
+//    for (int i =0;i<graph->n;++i) {
+//        printf("%s ", graph->variables[i]);
+//    }
+//    printf("\n");
+
     for (int i = 0; i < n; ++i) {
         if (!strlen(e[i].varName)) continue;
         int A = 0, B = 0;
@@ -36,26 +48,36 @@ void checkVariables(Expression *e, int n) {
             }
         }
         for (int j = 0; j < e[i].segCnt; ++j) {
+            if (!strlen(e[i].dependencies[j])) continue;
             for (; B < graph->n; ++B) {
                 if (!strcmp(graph->variables[B], e[i].dependencies[j])) {
                     break;
                 }
             }
-            if (A != B) {
-                // add edge
-                graph->g[A][B] = 1;
+            if (B == graph->n) {
+                fprintf(stderr, "Have an unrecognized variable '%s' in definition of '%s'", e[i].dependencies[j],
+                        e[i].varName);
+                exit(-1);
             }
+            // add edge
+            graph->g[A][B] = 1;
+
         }
     }
 
     printGraph(graph->g, graph->n);
     gResult *res = gProcess(graph->g, graph->n);
+    printf("cnt: ");
+    for (int i = 0; i < graph->n; ++i) {
+        printf("%d ",res->cnt[i]);
+    }
+    printf("\n");
 
     // has cycle
     if (res->size) {
         fprintf(stderr, "Have cycle in variable definition: ");
         for (int i = 0; i < res->size; ++i) {
-            fprintf(stderr,"%s", graph->variables[res->p[i]]);
+            fprintf(stderr, "%s", graph->variables[res->p[i]]);
             if (i + 1 != res->size) {
                 fprintf(stderr, " -> ");
             }
@@ -73,27 +95,32 @@ void checkVariables(Expression *e, int n) {
             }
         }
     }
+
+    qsort(e, n, sizeof(Expression), compare);
+
+    // TODO: there must be free of all functions
 }
 
-int dfs(int **g, int *used, int n, int v, gResult *res) {
+void dfs(int **g, int *used, int n, int v, gResult *res) {
+    if (res->cycleStart != -1) return; // recursive break
+
     used[v] = 1;
 
     for (int u = 0; u < n; ++u) {
         if (g[v][u]) {
             if (used[u] == 0) {
                 res->p[u] = v;
-                return dfs(g, used, n, u, res);
+                dfs(g, used, n, u, res);
             } else if (used[u] == 1) {
                 res->cycleEnd = v;
                 res->cycleStart = u;
-                return 1;
+                return;
             }
             res->cnt[v] += res->cnt[u] + 1;
         }
     }
 
     used[v] = 2;
-    return 0;
 }
 
 gResult *gProcess(int **g, int n) {
@@ -117,8 +144,8 @@ gResult *gProcess(int **g, int n) {
     memset(used, 0, n * sizeof(int));
 
     for (int i = 0; i < n; ++i) {
-        if (!used[i] && dfs(g, used, n, i, res)) {
-            break;
+        if (!used[i]) {
+            dfs(g, used, n, i, res);
         }
     }
 

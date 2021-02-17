@@ -1,4 +1,5 @@
-a = b
-b = c
-c = d
-d = a
+a = 2 + 5 * c
+c = b + z
+b = pi + 8
+exp(3 + 6j)
+z = log(100)

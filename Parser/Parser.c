@@ -74,7 +74,7 @@ int parserReadExpressions(char *filename, Expression *e, int debug, int forceLow
         int j = 0;
         while (e[number].formula[i][0] != '\0') {
             assert(getOpID(e[number].formula[i]) && "null opId");
-            if (getOpID(e[number].formula[i]) == VAR && strcmp(e[number].formula[i], e[number].varName)) {
+            if (getOpID(e[number].formula[i]) == VAR) {
                 strcpy(e[number].dependencies[j++], e[number].formula[i]);
                 assert(e[number].dependencies[j - 1] && "null str after strcpy at building dependencies");
                 e[number].evenDependenciesCnt++;
