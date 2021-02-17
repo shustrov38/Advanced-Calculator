@@ -62,9 +62,17 @@ Stack *rpnFunc(rpnProcessor *stack, char **string, int size) {
                 stPop(stack->opStack);
             }
             stPop(stack->opStack);
-            if (stack->opStack->size && (IS_FUNC_1ARG(stTop(stack->opStack)) || IS_FUNC_2ARG(stTop(stack->opStack)))) {
+            if (stack->opStack->size  && (IS_FUNC_1ARG(stTop(stack->opStack)) || IS_FUNC_2ARG(stTop(stack->opStack)))) {
                 stPush(stack->finalStack, stTop(stack->opStack));
                 stPop(stack->opStack);
+            }
+            if(stack->opStack->size && strcmp(stTop(stack->opStack), "^") == 0){
+                stPush(stack->finalStack, stTop(stack->opStack));
+                stPop(stack->opStack);
+                if(stack->opStack->size && strcmp(stTop(stack->opStack), "-") == 0){
+                    stPush(stack->finalStack, stTop(stack->opStack));
+                    stPop(stack->opStack);
+                }
             }
             openBracket--;
         }
