@@ -9,6 +9,15 @@ typedef struct {
     int cycleStart, cycleEnd;
 } Graph;
 
+void printGraph(Graph *g) {
+    for (int i = 0; i < g->n; ++i) {
+        for (int j = 0; j < g->n; ++j) {
+            printf("%d ", g->matrix[i][j]);
+        }
+        printf("\n");
+    }
+}
+
 void dfs(Graph *g, int v) {
     if (g->cycleStart != -1) return; // recursive break
 
@@ -87,6 +96,7 @@ void prepareVariables(Expression *e, int n) {
         memset(g->variables[i], 0, 10);
     }
 
+    // set variables list
     for (int i = 0; i < n; ++i) {
         if (!strlen(e[i].varName)) {
             // expression must be calculated at the end
@@ -103,7 +113,7 @@ void prepareVariables(Expression *e, int n) {
 
 #ifdef __GRAPH_DEBUG__
     printf("variables: ");
-    for (int i = 0;i < g->cycleLength;++i) {
+    for (int i = 0;i < g->n;++i) {
         printf("%s ", g->variables[i]);
     }
     printf("\n");
@@ -117,57 +127,61 @@ void prepareVariables(Expression *e, int n) {
         memset(g->matrix[i], 0, n * sizeof(int));
     }
 
+    // set matrix by list of variables
     for (int i = 0; i < n; ++i) {
         if (!strlen(e[i].varName)) continue;
-        int A = 0, B = 0;
-        for (; A < g->n; ++A) {
-            if (!strcmp(g->variables[A], e[i].varName)) {
+        int v = 0, u = 0;
+        for (; v < g->n; ++v) {
+            if (!strcmp(g->variables[v], e[i].varName)) {
                 break;
             }
         }
         for (int j = 0; j < e[i].segCnt; ++j) {
             if (!strlen(e[i].dependencies[j])) continue;
-            for (; B < g->n; ++B) {
-                if (!strcmp(g->variables[B], e[i].dependencies[j])) {
+            for (; u < g->n; ++u) {
+                if (!strcmp(g->variables[u], e[i].dependencies[j])) {
                     break;
                 }
             }
 
-            if (B == g->n) {
+            if (u == g->n) {
                 THROW_ERROR("Have an unrecognized variable '%s' in definition of '%s'", e[i].dependencies[j],
                             e[i].varName);
             }
 
-            g->matrix[A][B] = 1;
+            g->matrix[v][u] = 1;
         }
     }
 
 #ifdef __GRAPH_DEBUG__
-    printGraph(g->matrix, g->cycleLength);
+    printGraph(g);
 #endif //__GRAPH_DEBUG__
 
     gProcess(g);
 
 #ifdef __GRAPH_DEBUG__
     printf("graph_cnt: ");
-    for (int i = 0; i < g->cycleLength; ++i) {
-        printf("%d ", res->cnt[i]);
+    for (int i = 0; i < g->n; ++i) {
+        printf("%d ", g->cnt[i]);
     }
     printf("\n");
 #endif //__GRAPH_DEBUG__
 
     // has cycle
     if (g->cycleLength) {
-        fprintf(stderr, "Have cycle in variable definition: ");
+        fprintf(stderr, "Have cycle in variable definition: [");
         for (int i = 0; i < g->cycleLength; ++i) {
             fprintf(stderr, "%s", g->variables[g->p[i]]);
             if (i + 1 != g->cycleLength) {
                 fprintf(stderr, " -> ");
+            } else {
+                fprintf(stderr, "]");
             }
         }
         exit(-1);
     }
 
+    // copy cnt
     for (int i = 0; i < g->n; ++i) {
         for (int j = 0; j < n; ++j) {
             if (!strlen(e[j].varName)) continue;
@@ -192,13 +206,4 @@ void prepareVariables(Expression *e, int n) {
     free(g->matrix);
     free(g->cnt);
     free(g);
-}
-
-void printGraph(Graph *g) {
-    for (int i = 0; i < g->n; ++i) {
-        for (int j = 0; j < g->n; ++j) {
-            printf("%d ", g->matrix[i][j]);
-        }
-        printf("\n");
-    }
 }
