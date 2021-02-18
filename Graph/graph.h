@@ -9,25 +9,7 @@
 
 #include "../Parser/Parser.h"
 
-typedef struct {
-    int *cnt, *p;
-    int size;
-    int cycleStart, cycleEnd;
-} gResult;
-
-typedef struct {
-    int n;
-    char **variables;
-    int **g;
-} Graph;
-
-void checkVariables(Expression *e, int n);
-
-void transpose(int **g, int n);
-
-void printGraph(int **g, int n);
-
-gResult *gProcess(int **g, int n);
+void prepareVariables(Expression *e, int n);
 
 
 #endif //ADVANCED_CALCULATOR_GRAPH_H

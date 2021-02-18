@@ -1,5 +1,4 @@
-a = 2 + 5 * c
-c = b + z
-b = pi + 8
-exp(3 + 6j)
-z = log(100)
+a = 5 + b
+b = log(c + pi)
+c = 74 + min(a, 2^k)
+k = 0

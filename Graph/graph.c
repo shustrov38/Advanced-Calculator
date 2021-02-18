@@ -1,12 +1,84 @@
 #include "graph.h"
 
+typedef struct {
+    int *cnt, *p, *used;
+    int n; // cycle length. if exists, cycle stored in *p
+    int cycleStart, cycleEnd;
+} Data;
+
+typedef struct {
+    int n; // count of unique variables
+    char **variables;
+    int **g;
+    Data data;
+} Graph;
+
+void dfs(Graph *g, int v) {
+    if (g->data.cycleStart != -1) return; // recursive break
+
+    g->data.used[v] = 1;
+
+    for (int u = 0; u < g->n; ++u) {
+        if (g->g[v][u]) {
+            if (g->data.used[u] == 0) {
+                g->data.p[u] = v;
+                dfs(g, u);
+            } else if (g->data.used[u] == 1) {
+                g->data.cycleEnd = v;
+                g->data.cycleStart = u;
+                return;
+            }
+            g->data.cnt[v] += g->data.cnt[u] + 1;
+        }
+    }
+
+    g->data.used[v] = 2;
+}
+
+void gProcess(Graph *g) {
+    g->data.used = (int *) malloc(g->n * sizeof(int));
+    assert(g->data.used != NULL && "bad mem allocation");
+    memset(g->data.used, 0, g->n * sizeof(int));
+
+    g->data.cnt = (int *) malloc(g->n * sizeof(int));
+    assert(g->data.cnt != NULL && "bad mem allocation");
+    memset(g->data.cnt, 0, g->n * sizeof(int));
+
+    g->data.p = (int *) malloc((g->n + 1) * sizeof(int));
+    assert(g->data.p != NULL && "bad mem allocation");
+    memset(g->data.p, -1, (g->n + 1) * sizeof(int));
+
+    g->data.n = 0;
+    g->data.cycleStart = -1;
+    g->data.cycleEnd = -1;
+
+    for (int v = 0; v < g->n; ++v) {
+        if (!g->data.used[v]) {
+            dfs(g, v);
+        }
+    }
+
+    if (g->data.cycleStart != -1) {
+        int cycle[g->n + 1];
+        cycle[g->data.n++] = g->data.cycleStart;
+        for (int v = g->data.cycleEnd; v != -1; v = g->data.p[v]) {
+            cycle[g->data.n++] = v;
+        }
+        for (int i = g->data.n - 1; i >= 0; --i) {
+            g->data.p[g->data.n - 1 - i] = cycle[i];
+        }
+    }
+}
+
 static int compare(const void *a, const void *b) {
-    int aDep = ((Expression *)a)->trueDependenciesCnt;
-    int bDep = ((Expression *)b)->trueDependenciesCnt;
+    int aDep = ((Expression *) a)->trueDependenciesCnt;
+    int bDep = ((Expression *) b)->trueDependenciesCnt;
     return aDep - bDep;
 }
 
-void checkVariables(Expression *e, int n) {
+void prepareVariables(Expression *e, int n) {
+#define THROW_ERROR(...) fprintf(stderr, "\n"__VA_ARGS__); exit(-1)
+
     Graph *graph = (Graph *) malloc(sizeof(Graph));
     assert(graph != NULL && "bad mem allocate");
 
@@ -19,11 +91,23 @@ void checkVariables(Expression *e, int n) {
         memset(graph->variables[i], 0, 10);
     }
 
-    // TODO: check for identical name
     for (int i = 0; i < n; ++i) {
         if (!strlen(e[i].varName)) continue;
+        for (int j = 0; j < graph->n; ++j) {
+            if (!strcmp(graph->variables[j], e[i].varName)) {
+                THROW_ERROR("There is more than one possible definition for variable '%s'", e[i].varName);
+            }
+        }
         strcpy(graph->variables[graph->n++], e[i].varName);
     }
+
+#ifdef __GRAPH_DEBUG__
+    printf("variables: ");
+    for (int i = 0;i < graph->n;++i) {
+        printf("%s ", graph->variables[i]);
+    }
+    printf("\n");
+#endif //__GRAPH_DEBUG__
 
     graph->g = (int **) malloc(n * sizeof(int *));
     assert(graph->g != NULL && "bad mem allocate");
@@ -32,12 +116,6 @@ void checkVariables(Expression *e, int n) {
         assert(graph->g[i] != NULL && "bad mem allocate");
         memset(graph->g[i], 0, n * sizeof(int));
     }
-
-//    printf("variables: ");
-//    for (int i =0;i<graph->n;++i) {
-//        printf("%s ", graph->variables[i]);
-//    }
-//    printf("\n");
 
     for (int i = 0; i < n; ++i) {
         if (!strlen(e[i].varName)) continue;
@@ -54,31 +132,36 @@ void checkVariables(Expression *e, int n) {
                     break;
                 }
             }
-            if (B == graph->n) {
-                fprintf(stderr, "Have an unrecognized variable '%s' in definition of '%s'", e[i].dependencies[j],
-                        e[i].varName);
-                exit(-1);
-            }
-            // add edge
-            graph->g[A][B] = 1;
 
+            if (B == graph->n) {
+                THROW_ERROR("Have an unrecognized variable '%s' in definition of '%s'", e[i].dependencies[j],
+                            e[i].varName);
+            }
+
+            graph->g[A][B] = 1;
         }
     }
 
+#ifdef __GRAPH_DEBUG__
     printGraph(graph->g, graph->n);
-    gResult *res = gProcess(graph->g, graph->n);
-    printf("cnt: ");
+#endif //__GRAPH_DEBUG__
+
+    gProcess(graph);
+
+#ifdef __GRAPH_DEBUG__
+    printf("graph_cnt: ");
     for (int i = 0; i < graph->n; ++i) {
-        printf("%d ",res->cnt[i]);
+        printf("%d ", res->cnt[i]);
     }
     printf("\n");
+#endif //__GRAPH_DEBUG__
 
     // has cycle
-    if (res->size) {
+    if (graph->data.n) {
         fprintf(stderr, "Have cycle in variable definition: ");
-        for (int i = 0; i < res->size; ++i) {
-            fprintf(stderr, "%s", graph->variables[res->p[i]]);
-            if (i + 1 != res->size) {
+        for (int i = 0; i < graph->data.n; ++i) {
+            fprintf(stderr, "%s", graph->variables[graph->data.p[i]]);
+            if (i + 1 != graph->data.n) {
                 fprintf(stderr, " -> ");
             }
         }
@@ -90,7 +173,7 @@ void checkVariables(Expression *e, int n) {
             if (!strlen(e[j].varName)) {
                 e[j].trueDependenciesCnt = n + 1;
             } else if (!strcmp(graph->variables[i], e[j].varName)) {
-                e[j].trueDependenciesCnt = res->cnt[i];
+                e[j].trueDependenciesCnt = graph->data.cnt[i];
                 break;
             }
         }
@@ -98,69 +181,8 @@ void checkVariables(Expression *e, int n) {
 
     qsort(e, n, sizeof(Expression), compare);
 
+#undef THROW_ERROR
     // TODO: there must be free of all functions
-}
-
-void dfs(int **g, int *used, int n, int v, gResult *res) {
-    if (res->cycleStart != -1) return; // recursive break
-
-    used[v] = 1;
-
-    for (int u = 0; u < n; ++u) {
-        if (g[v][u]) {
-            if (used[u] == 0) {
-                res->p[u] = v;
-                dfs(g, used, n, u, res);
-            } else if (used[u] == 1) {
-                res->cycleEnd = v;
-                res->cycleStart = u;
-                return;
-            }
-            res->cnt[v] += res->cnt[u] + 1;
-        }
-    }
-
-    used[v] = 2;
-}
-
-gResult *gProcess(int **g, int n) {
-    gResult *res = (gResult *) malloc(sizeof(gResult));
-    assert(res != NULL && "bad mem allocation");
-
-    res->cnt = (int *) malloc(n * sizeof(int));
-    assert(res->cnt != NULL && "bad mem allocation");
-    memset(res->cnt, 0, n * sizeof(int));
-
-    res->p = (int *) malloc((n + 1) * sizeof(int));
-    assert(res->p != NULL && "bad mem allocation");
-    memset(res->p, -1, (n + 1) * sizeof(int));
-
-    res->size = 0;
-    res->cycleStart = -1;
-    res->cycleEnd = -1;
-
-    int *used = (int *) malloc(n * sizeof(int));
-    assert(used != NULL && "bad mem allocation");
-    memset(used, 0, n * sizeof(int));
-
-    for (int i = 0; i < n; ++i) {
-        if (!used[i]) {
-            dfs(g, used, n, i, res);
-        }
-    }
-
-    if (res->cycleStart != -1) {
-        int cycle[n + 1];
-        cycle[res->size++] = res->cycleStart;
-        for (int v = res->cycleEnd; v != -1; v = res->p[v]) {
-            cycle[res->size++] = v;
-        }
-        for (int i = res->size - 1; i >= 0; --i) {
-            res->p[res->size - 1 - i] = cycle[i];
-        }
-    }
-
-    return res;
 }
 
 void printGraph(int **g, int n) {
