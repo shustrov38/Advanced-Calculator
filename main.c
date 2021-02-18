@@ -10,7 +10,7 @@
 int main() {
     /* Input Data Parser initialization */
     Expression *e = createExpressions();
-    int n = parserReadExpressions("../input.txt", e, 1, 1);
+    int n = parserReadExpressions("../input.txt", e, 0, 1);
     prepareVariables(e, n);
     for (int i = 0; i < n; ++i) {
         if (strlen(e[i].varName)) {

@@ -16,6 +16,12 @@ void initExpression(Expression *E) {
         E[i].varName = (char *) malloc(10 * sizeof(char));
         E[i].evenDependenciesCnt = 0;
         E[i].trueDependenciesCnt = 0;
+
+        for (int j = 0; j < MAX_E_SIZE; ++j) {
+            memset(E[i].formula[j], 0, MAX_V_NAME_SIZE);
+            memset(E[i].dependencies[j], 0, MAX_V_NAME_SIZE);
+        }
+
     }
 }
 
@@ -35,7 +41,7 @@ int splitExpression(char *src, char **dest, char divs[]) {
     int i = 0;
     int k = 0;
     int z = 0;
-    int opF = 1;
+    int opF = 1; //is op flag for ch
     while (src[i] != '\n' && src[i] != '\0') {
         while (i < strlen(src) - 1 && (src[i] == ' ' || src[i] == '\t')) i++;
         int dvF = 0;
@@ -60,6 +66,45 @@ int splitExpression(char *src, char **dest, char divs[]) {
     while ((dest[k][0] == ' ' || dest[k][0] == '\t')) k--;
 
     return k + (dest[k][0] != 0);
+}
+
+char *checkForErrors(char **dest, int n) {
+#define PARSE_ERROR(...) fprintf(stderr, "\n"__VA_ARGS__); exit(-1)
+    for (int i = 0; i < n; ++i) {
+        if (IS_OPER(dest[i])) {
+            if (i == 0 || IS_OPER(dest[i - 1]) || IS_OPER(dest[i + 1])) {
+                PARSE_ERROR("operator '%s' must have two operands\n", dest[i]);
+            }
+        } else if (IS_NUM(dest[i])) {
+            for (int j = 0; dest[i][j] != '\0'; j++) {
+                if ((dest[i][j] < '0' || dest[i][j] > '9') && dest[i][j] != '.') {
+                    PARSE_ERROR("wrong number input '%s'\n", dest[i]);
+                }
+                if (dest[i][j] == '.' && dest[i][j + 1] == '\0') {
+                    PARSE_ERROR("wrong number input '%s'\n", dest[i]);
+                }
+            }
+            if (dest[i][0] == '0' && dest[i][1] != '\0' && dest[i][1] != '.') {
+                PARSE_ERROR("wrong number input '%s'\n", dest[i]);
+            }
+        } else if (IS_VAR(dest[i])) {
+            if (dest[i][0] < 'a' || dest[i][0] > 'z') {
+                PARSE_ERROR("wrong number input '%s'\n", dest[i]);
+            }
+        } else if (IS_FUNC_1ARG(dest[i])) {
+            if (getOpID(dest[i + 1]) != OPB || (!IS_VAR(dest[i + 2]) && !IS_NUM(dest[i + 2])) ||
+                getOpID(dest[i + 3]) != CLB) {
+                PARSE_ERROR("wrong '%s' function error\n", dest[i]);
+            }
+        } else if (IS_FUNC_2ARG(dest[i])) {
+            if (!(i < n - 5 && (getOpID(dest[i + 1]) == OPB && (IS_VAR(dest[i + 2]) || IS_NUM(dest[i + 2]))
+                                && !strcmp(dest[i + 3], ",") && (IS_VAR(dest[i + 4]) || IS_NUM(dest[i + 4])) &&
+                                getOpID(dest[i + 5]) == CLB))) {
+                PARSE_ERROR("wrong '%s' function error\n", dest[i]);
+            }
+        }
+    }
+#undef PARSE_ERROR
 }
 
 int parserReadExpressions(char *filename, Expression *e, int debug, int forceLowerCase) {
@@ -108,6 +153,7 @@ int parserReadExpressions(char *filename, Expression *e, int debug, int forceLow
             }
             printf("\n");
         }
+        checkForErrors(e[number].formula, e[number].segCnt);
         ++number;
     }
     fclose(in);
