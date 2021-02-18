@@ -9,6 +9,7 @@
 
 #include "../Stack/stack.h"
 #include "../Operations/ops.h"
+#include "../Parser/Parser.h"
 
 typedef enum {
     OPERATION,
@@ -29,7 +30,7 @@ Node *nodeInit(int elementSize);
 
 void opTreeGen(Node *node, Stack *stack);
 
-double complex opTreeCalc(Node *node);
+double complex opTreeCalc(Node *node, Expression *e, int n);
 
 void opTreePrint(Node *node, Node *parent);
 

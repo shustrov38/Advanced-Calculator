@@ -40,9 +40,12 @@ void opTreeGen(Node *node, Stack *stack) {
     }
 }
 
-double complex opTreeCalc(Node *node) {
+double complex opTreeCalc(Node *node, Expression *e, int n) {
     if (node == NULL) return 0;
-    double complex a = opTreeCalc(node->left), b = opTreeCalc(node->right);
+
+    double complex a = opTreeCalc(node->left, e, n);
+    double complex b = opTreeCalc(node->right, e, n);
+
     switch (getOpID(node->value)) {
         case PLS:
             return _sum(a, b);
@@ -97,8 +100,12 @@ double complex opTreeCalc(Node *node) {
         case J:
             return _j();
         case VAR:
-            // here must be search of the variable
-            return toComplex(node->value);
+            for (int i = 0; i < n; ++i) {
+                if (!strlen(e[i].varName)) continue;
+                if (!strcmp(node->value, e[i].varName)) {
+                    return e[i].value;
+                }
+            }
         default:
             return toComplex(node->value);
     }
@@ -109,7 +116,8 @@ void opTreePrint(Node *node, Node *parent) {
     int need;
     switch (node->state) {
         case OPERATION:
-            need = (parent != NULL) && (PRIORITY(node->value) == SUM && PRIORITY(parent->value) == PROD);
+            need = (parent != NULL) && ((PRIORITY(node->value) == SUM && PRIORITY(parent->value) == PROD) ||
+                                        (PRIORITY(node->value) == SUM && PRIORITY(parent->value) == POWER));
             if (need) printf("(");
             opTreePrint(node->left, node);
             printf("%s", node->value);

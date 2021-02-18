@@ -114,7 +114,7 @@ void prepareVariables(Expression *e, int n) {
 #ifdef __GRAPH_DEBUG__
     printf("variables: ");
     for (int i = 0;i < g->n;++i) {
-        printf("%s ", g->variables[i]);
+        printf("'%s' ", g->variables[i]);
     }
     printf("\n");
 #endif //__GRAPH_DEBUG__
@@ -131,22 +131,22 @@ void prepareVariables(Expression *e, int n) {
     for (int i = 0; i < n; ++i) {
         if (!strlen(e[i].varName)) continue;
         int v = 0, u = 0;
-        for (; v < g->n; ++v) {
+        for (v = 0; v < g->n; ++v) {
             if (!strcmp(g->variables[v], e[i].varName)) {
                 break;
             }
         }
-        for (int j = 0; j < e[i].segCnt; ++j) {
+
+        for (int j = 0; j < e[i].evenDependenciesCnt; ++j) {
             if (!strlen(e[i].dependencies[j])) continue;
-            for (; u < g->n; ++u) {
+            for (u = 0; u < g->n; ++u) {
                 if (!strcmp(g->variables[u], e[i].dependencies[j])) {
                     break;
                 }
             }
 
             if (u == g->n) {
-                THROW_ERROR("Have an unrecognized variable '%s' in definition of '%s'", e[i].dependencies[j],
-                            e[i].varName);
+                THROW_ERROR("Have an unrecognized variable '%s' in definition of '%s'", e[i].dependencies[j], e[i].varName);
             }
 
             g->matrix[v][u] = 1;

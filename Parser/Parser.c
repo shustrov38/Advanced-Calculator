@@ -72,36 +72,36 @@ char *checkForErrors(char **dest, int n) {
 #define PARSE_ERROR(...) fprintf(stderr, "\n"__VA_ARGS__); exit(-1)
     for (int i = 0; i < n; ++i) {
         if (IS_OPER(dest[i])) {
-            if (i == 0 || IS_OPER(dest[i - 1]) || IS_OPER(dest[i + 1])) {
-                PARSE_ERROR("operator '%s' must have two operands\n", dest[i]);
-            }
+//            if (i == 0 || IS_OPER(dest[i - 1]) || IS_OPER(dest[i + 1])) {
+//                PARSE_ERROR("operator '%s' must have two operands\n", dest[i]);
+//            }
         } else if (IS_NUM(dest[i])) {
-            for (int j = 0; dest[i][j] != '\0'; j++) {
-                if ((dest[i][j] < '0' || dest[i][j] > '9') && dest[i][j] != '.') {
-                    PARSE_ERROR("wrong number input '%s'\n", dest[i]);
-                }
-                if (dest[i][j] == '.' && dest[i][j + 1] == '\0') {
-                    PARSE_ERROR("wrong number input '%s'\n", dest[i]);
-                }
-            }
-            if (dest[i][0] == '0' && dest[i][1] != '\0' && dest[i][1] != '.') {
-                PARSE_ERROR("wrong number input '%s'\n", dest[i]);
-            }
+//            for (int j = 0; dest[i][j] != '\0'; j++) {
+//                if ((dest[i][j] < '0' || dest[i][j] > '9') && dest[i][j] != '.') {
+//                    PARSE_ERROR("wrong number input '%s'\n", dest[i]);
+//                }
+//                if (dest[i][j] == '.' && dest[i][j + 1] == '\0') {
+//                    PARSE_ERROR("wrong number input '%s'\n", dest[i]);
+//                }
+//            }
+//            if (dest[i][0] == '0' && dest[i][1] != '\0' && dest[i][1] != '.') {
+//                PARSE_ERROR("wrong number input '%s'\n", dest[i]);
+//            }
         } else if (IS_VAR(dest[i])) {
-            if (dest[i][0] < 'a' || dest[i][0] > 'z') {
-                PARSE_ERROR("wrong number input '%s'\n", dest[i]);
-            }
+//            if (dest[i][0] < 'a' || dest[i][0] > 'z') {
+//                PARSE_ERROR("wrong number input '%s'\n", dest[i]);
+//            }
         } else if (IS_FUNC_1ARG(dest[i])) {
-            if (getOpID(dest[i + 1]) != OPB || (!IS_VAR(dest[i + 2]) && !IS_NUM(dest[i + 2])) ||
-                getOpID(dest[i + 3]) != CLB) {
-                PARSE_ERROR("wrong '%s' function error\n", dest[i]);
-            }
+//            if (getOpID(dest[i + 1]) != OPB || (!IS_VAR(dest[i + 2]) && !IS_NUM(dest[i + 2])) ||
+//                getOpID(dest[i + 3]) != CLB) {
+//                PARSE_ERROR("wrong '%s' function error\n", dest[i]);
+//            }
         } else if (IS_FUNC_2ARG(dest[i])) {
-            if (!(i < n - 5 && (getOpID(dest[i + 1]) == OPB && (IS_VAR(dest[i + 2]) || IS_NUM(dest[i + 2]))
-                                && !strcmp(dest[i + 3], ",") && (IS_VAR(dest[i + 4]) || IS_NUM(dest[i + 4])) &&
-                                getOpID(dest[i + 5]) == CLB))) {
-                PARSE_ERROR("wrong '%s' function error\n", dest[i]);
-            }
+//            if (!(i < n - 5 && (getOpID(dest[i + 1]) == OPB && (IS_VAR(dest[i + 2]) || IS_NUM(dest[i + 2]))
+//                                && !strcmp(dest[i + 3], ",") && (IS_VAR(dest[i + 4]) || IS_NUM(dest[i + 4])) &&
+//                                getOpID(dest[i + 5]) == CLB))) {
+//                PARSE_ERROR("wrong '%s' function error\n", dest[i]);
+//            }
         }
     }
 #undef PARSE_ERROR

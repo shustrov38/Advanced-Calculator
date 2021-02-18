@@ -150,7 +150,7 @@ void printNum(double complex value) {
             printf("%f", creal(value));
         }
     } else {
-        printf("%f + %fi", creal(value), cimag(value));
+        printf("%f %c %fi", creal(value), (cimag(value) < 0 ? '-' : '+'), fabs(cimag(value)));
     }
 }
 
