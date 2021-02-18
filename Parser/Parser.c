@@ -9,7 +9,9 @@ void initExpression(Expression *E) {
         E[i].dependencies = (char **) malloc(100 * sizeof(char *));
         for (int j = 0; j < 100; ++j) {
             E[i].formula[j] = (char *) malloc(10 * sizeof(char));
+            memset(E[i].formula[j], 0, 10);
             E[i].dependencies[j] = (char *) malloc(10 * sizeof(char));
+            memset(E[i].dependencies[j], 0, 10);
         }
         E[i].varName = (char *) malloc(10 * sizeof(char));
         E[i].evenDependenciesCnt = 0;
@@ -51,7 +53,7 @@ int splitExpression(char *src, char **dest, char divs[]) {
         }
     }
 
-    for (int i = 0; i < 100; ++i) {
+    for (i = 0; i < 100; ++i) {
         strcpy(dest[i], tmpStr[i]);
     }
 
@@ -77,15 +79,13 @@ int parserReadExpressions(char *filename, Expression *e, int debug, int forceLow
             for (int segI = 0; segI < e[number].segCnt - 2; segI++) {
                 strcpy(e[number].formula[segI], e[number].formula[segI + 2]);
             }
-            memset(e[number].formula[e[number].segCnt - 1], 0, 100);
-            memset(e[number].formula[e[number].segCnt - 2], 0, 100);
             e[number].segCnt -= 2;
         }
         int i = 0;
         int j = 0;
         while (e[number].formula[i][0] != '\0') {
             assert(getOpID(e[number].formula[i]) && "null opId");
-            if (getOpID(e[number].formula[i]) == VAR && strcmp(e[number].formula[i], e[number].varName)) {
+            if (getOpID(e[number].formula[i]) == VAR) {
                 strcpy(e[number].dependencies[j++], e[number].formula[i]);
                 assert(e[number].dependencies[j - 1] && "null str after strcpy at building dependencies");
                 e[number].evenDependenciesCnt++;
@@ -94,17 +94,17 @@ int parserReadExpressions(char *filename, Expression *e, int debug, int forceLow
         }
         if (debug) {
             printf("expression (%s) #%d:[ ", e[number].varName, number + 1);
-            for (int i = 0; i < MAX_E_SIZE && e[number].formula[i][0] != '\0'; ++i) {
+            for (i = 0; i < MAX_E_SIZE && e[number].formula[i][0] != '\0'; ++i) {
                 printf("%s ", e[number].formula[i]);
             }
             printf("] ");
             if (e[number].evenDependenciesCnt > 0) {
-                printf("dependencies are: ", e[number].varName, number + 1);
-                for (int i = 0; i < e[number].evenDependenciesCnt; ++i) {
-                    printf("%s ", e[number].dependencies[i]);
+                printf("dependencies are: ");
+                for (i = 0; i < e[number].evenDependenciesCnt; ++i) {
+                    printf("'%s' ", e[number].dependencies[i]);
                 }
-                printf("; %d even dependencies \n", e[number].evenDependenciesCnt);
-            } else printf("without dependencies\n");
+            }
+            printf("\n");
         }
         ++number;
     }

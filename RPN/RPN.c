@@ -17,7 +17,6 @@ Stack *rpnFunc(rpnProcessor *stack, char **string, int size) {
     int openBracket = 0, closeBracket = 0;
     int func = 0;
 
-
     assert(size > 0 && string != NULL);
     for (int i = 0; i < size; ++i) {
         if (IS_VAR(string[i]) || IS_CONST(string[i]) || getOpID(string[i]) == NUM) {
