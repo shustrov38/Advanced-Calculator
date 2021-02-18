@@ -1,3 +1,4 @@
+
 #include "RPN.h"
 #include "../Operations/ops.h"
 #include "../Stack/stack.h"
@@ -29,9 +30,11 @@ Stack *rpnFunc(rpnProcessor *stack, char **string, int size) {
             stPop(stack->opStack);
         }
 
+
         if (IS_OPER(string[i]) || IS_FUNC_1ARG(string[i]) || IS_FUNC_2ARG(string[i])) {
             if (stack->opStack->size != 0 && (IS_OPER(stTop(stack->opStack)) || IS_FUNC_1ARG(stTop(stack->opStack)) ||
                                               IS_FUNC_2ARG(stTop(stack->opStack)))) {
+
                 if (PRIORITY(string[i]) > PRIORITY(stTop(stack->opStack))) {
                     stPush(stack->opStack, string[i]);
                 } else {
@@ -42,8 +45,10 @@ Stack *rpnFunc(rpnProcessor *stack, char **string, int size) {
                             strcmp((stTop(stack->opStack)), "^") == 0) {
                             stPush(stack->opStack, string[i]);
                         } else {
-                            stPush(stack->finalStack, stTop(stack->opStack));
-                            stPop(stack->opStack);
+                            while(stack->opStack->size != 0 && PRIORITY(string[i]) <= PRIORITY(stTop(stack->opStack)) ) {
+                                stPush(stack->finalStack, stTop(stack->opStack));
+                                stPop(stack->opStack);
+                            }
                             stPush(stack->opStack, string[i]);
                         }
                     }
@@ -90,5 +95,4 @@ Stack *rpnFunc(rpnProcessor *stack, char **string, int size) {
 
     return stack->finalStack;
 }
-
 
