@@ -58,7 +58,6 @@ Stack *rpnFunc(rpnProcessor *stack, char **string, int size) {
                                IS_FUNC_2ARG(string[i]) || !strcmp(string[i], "^")) {
                         stPush(stack->opStack, string[i]);
                     }
-                    ++i;
                 } else stPush(stack->opStack, string[i]);
             }
         }
@@ -85,6 +84,7 @@ Stack *rpnFunc(rpnProcessor *stack, char **string, int size) {
         stPrint(stack->opStack);
         printf("final");
         stPrint(stack->finalStack);
+        printf("i = %d\n", i);
         //DEBUG
 
     }
@@ -94,6 +94,7 @@ Stack *rpnFunc(rpnProcessor *stack, char **string, int size) {
                stTop(stack->opStack));
         stPop(stack->opStack);
     }
+    stPrint(stack->finalStack);
     return stack->finalStack;
 }
 
