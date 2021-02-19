@@ -83,7 +83,6 @@ void *checkForErrors(char **dest, int dlenght) {
                 ERROR("BAD EXPRESSION NOTATION : empty brackets");
             }
         }
-
         if (brCnt < 0) {ERROR("BAD EXPRESSION NOTATION : wrong bracket sequence");}
         if (IS_OPER(dest[i])) { // check for {binary operand} exception
             if (i == 0 || IS_OPER(dest[i - 1]) || IS_OPER(dest[i + 1])) {
@@ -114,12 +113,12 @@ void *checkForErrors(char **dest, int dlenght) {
             }
         }
         else if (IS_VAR(dest[i])) { // check for {var names} exception
-            if (dest[i][0] < 'a' || dest[i][0] > 'z') {
-                ERROR("wrong number input '%s'\n", dest[i]);
+            if (!((dest[i][0] >= 'a' && dest[i][0] <= 'z')||(dest[i][0]=='_'))) {
+                ERROR("BAD VAR NAME : explicit char in variable name '%s'\n", dest[i]);
             }
-            for(int j=1;dest[i][j]!='\0';j++) {
-                if( !(dest[i][j] >= 'a' && dest[i][0] <= 'z') && !(dest[i][j] >= '0' && dest[i][j] <= '9') ) {
-                    ERROR("wrong number input '%s'\n", dest[i]);
+            for (int j = 1; dest[i][j] != '\0'; j++){
+                if (!((dest[i][j] >= 'a' && dest[i][j] <= 'z')||(dest[i][j] >= '0' && dest[i][j] <= '9')||(dest[i][j]=='_'))) {
+                    ERROR("BAD VAR NAME : explicit char in variable name '%s'\n", dest[i]);
                 }
             }
         }
