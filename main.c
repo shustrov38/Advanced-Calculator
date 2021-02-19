@@ -21,7 +21,9 @@ int main(const int argc, const char *argv[]) {
 
     Expression *e = createExpressions();
     int n = parserReadExpressions(filename, e, 0, 1);
+
     prepareVariables(e, n);
+
     for (int i = 0; i < n; ++i) {
         rpnProcessor *outStack = rpnProcInit(10 * sizeof(char));
         Node *root = nodeInit(10 * sizeof(char));
@@ -30,6 +32,7 @@ int main(const int argc, const char *argv[]) {
 //        printf("\n");
         e[i].value = opTreeCalc(root, e, n);
     }
+
     for (int i = 0; i < n; ++i) {
         if (strlen(e[i].varName)) {
             printf("%s = ", e[i].varName);
@@ -39,5 +42,7 @@ int main(const int argc, const char *argv[]) {
         printNum(e[i].value);
         printf("\n");
     }
+
+    free(filename);
     return EXIT_SUCCESS;
 }
