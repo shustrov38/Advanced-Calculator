@@ -13,9 +13,11 @@ int main() {
     int n = parserReadExpressions("../input.txt", e, 0, 1);
     prepareVariables(e, n);
     for (int i = 0; i < n; ++i) {
-        rpnProcessor *outStack = init();
+        rpnProcessor *outStack = rpnProcInit(10 * sizeof(char));
         Node *root = nodeInit(10 * sizeof(char));
         opTreeGen(root, rpnFunc(outStack, e[i].formula, e[i].segCnt));
+        opTreePrint(root, NULL);
+        printf("\n");
         e[i].value = opTreeCalc(root, e, n);
     }
     for (int i = 0; i < n; ++i) {

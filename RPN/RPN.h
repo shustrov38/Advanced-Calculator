@@ -10,6 +10,8 @@ typedef struct {
     Stack *finalStack;
 } rpnProcessor;
 
+rpnProcessor *rpnProcInit(int elementSize);
+
 int cmpOpen(char *string1);
 
 int cmpClose(char *string1);

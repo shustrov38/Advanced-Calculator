@@ -1,18 +1,13 @@
-
 #include "RPN.h"
-#include "../Operations/ops.h"
-#include "../Stack/stack.h"
 
-
-rpnProcessor *init() {
+rpnProcessor *rpnProcInit(int elementSize) {
     rpnProcessor *stackVault = malloc(sizeof(rpnProcessor));
-    stackVault->numStack = stCreate(sizeof(char[10]));
-    stackVault->opStack = stCreate(sizeof(char[10]));
-    stackVault->finalStack = stCreate(sizeof(char[10]));
-    assert(stackVault && "NULLPTR in init");
+    stackVault->numStack = stCreate(elementSize);
+    stackVault->opStack = stCreate(elementSize);
+    stackVault->finalStack = stCreate(elementSize);
+    assert(stackVault != NULL && "bad mem allocate");
     return stackVault;
 }
-
 
 Stack *rpnFunc(rpnProcessor *stack, char **string, int size) {
     int openBracket = 0, closeBracket = 0;

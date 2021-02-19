@@ -1,5 +1,18 @@
 #include "ops.h"
 
+#define eps 1e-6
+
+// check real complex part of X to integer
+#define IS_INT(X) (fabs(creal(X) - (int)(X)) <= eps)
+// check real complex part of X to Y
+#define EQR(X, Y) (fabs(creal(X) - (Y)) <= eps)
+// check imag complex part of X to Y
+#define EQI(X, Y) (fabs(cimag(X) - (Y)) <= eps)
+// check for equal two complex numbers
+#define EQC(X, Y) (EQR(X, Y) && EQI(X, Y))
+// print error
+#define ERROR(...) fprintf(stderr, __VA_ARGS__); exit(-1)
+
 OpID getOpID(char *op) {
     // extra options
     if (!strcmp(op, "="))
@@ -18,6 +31,9 @@ OpID getOpID(char *op) {
         return NUM;
 
     // arithmetic operations
+    if (!strcmp(op, "--"))
+        return UMNS;
+
     if (!strcmp(op, "+"))
         return PLS;
 
@@ -131,10 +147,11 @@ Priority getOpPriority(OpID id) {
             return FUNC;
         case PWR:
             return POWER;
+        case UMNS:
+            return UNARY;
         default:
             return NONE;
     }
-
 }
 
 double complex toComplex(char *str) {
@@ -168,45 +185,80 @@ double complex _mul(double complex a, double complex b) {
 
 double complex _div(double complex a, double complex b) {
     if (EQC(b, 0)) {
-        ERROR("division by zero");
+        ERROR("Division by zero.");
     }
     return a / b;
 }
 
 double complex _mod(double complex a, double complex b) {
-    if (!(EQI(a, 0) && IS_INT(a) && EQI(b, 0) && IS_INT(b))) {
-        ERROR("operation '%%' is defined for integers");
+    int left = !EQI(a, 0);
+    int right = !EQI(b, 0);
+    if (left || right) {
+        fprintf(stderr, "Operation '%%' is not define for complex operands. ");
+        if (left && right) {
+            ERROR("Check both operands.");
+        } else {
+            ERROR("Check %s operand.", (left ? "left" : "right"));
+        }
     }
     return (int) a % (int) b;
 }
 
 double complex _pwr(double complex a, double complex b) {
-    if (!(EQI(a, 0) && EQI(b, 0))) {
-        ERROR("operation '^' is not defined for complex numbers");
+    int left = !EQI(a, 0);
+    int right = !EQI(b, 0);
+    if (left || right) {
+        fprintf(stderr, "Operation '^' is not define for complex operands. ");
+        if (left && right) {
+            ERROR("Check both operands.");
+        } else {
+            ERROR("Check %s operand.", (left ? "left" : "right"));
+        }
     }
     if (EQR(a, 0) && creal(b) < 0) {
-        ERROR("operation '^' is not defined for negative powers of zero");
+        ERROR("Operation '^' is not defined for negative powers of zero");
     }
     return pow(a, b);
 }
 
 double complex _and(double complex a, double complex b) {
-    if (!(EQI(a, 0) && IS_INT(a) && EQI(b, 0) && IS_INT(b))) {
-        ERROR("operation '&' is defined for integers");
+    int left = !(EQI(a, 0) && IS_INT(a));
+    int right = !(EQI(b, 0) && IS_INT(b));
+    if (left || right) {
+        fprintf(stderr, "Operation '&' is not define for complex operands. ");
+        if (left && right) {
+            ERROR("Check both operands.");
+        } else {
+            ERROR("Check %s operand.", (left ? "left" : "right"));
+        }
     }
     return (int)a & (int)b;
 }
 
 double complex _or(double complex a, double complex b) {
-    if (!(EQI(a, 0) && IS_INT(a) && EQI(b, 0) && IS_INT(b))) {
-        ERROR("operation '|' is defined for integers");
+    int left = !(EQI(a, 0) && IS_INT(a));
+    int right = !(EQI(b, 0) && IS_INT(b));
+    if (left || right) {
+        fprintf(stderr, "Operation '|' is not define for complex operands. ");
+        if (left && right) {
+            ERROR("Check both operands.");
+        } else {
+            ERROR("Check %s operand.", (left ? "left" : "right"));
+        }
     }
     return (int)a | (int)b;
 }
 
 double complex _xor(double complex a, double complex b) {
-    if (!(EQI(a, 0) && IS_INT(a) && EQI(b, 0) && IS_INT(b))) {
-        ERROR("operation 'xor' is defined for integers");
+    int left = !(EQI(a, 0) && IS_INT(a));
+    int right = !(EQI(b, 0) && IS_INT(b));
+    if (left || right) {
+        fprintf(stderr, "Operation '@' is not define for complex operands. ");
+        if (left && right) {
+            ERROR("Check both operands.");
+        } else {
+            ERROR("Check %s operand.", (left ? "left" : "right"));
+        }
     }
     return (int)a ^ (int)b;
 }
@@ -221,28 +273,28 @@ double complex _cos(double complex a) {
 
 double complex _ln(double complex a) {
     if (EQI(a, 0) && creal(a) < 0) {
-        ERROR("function 'ln' for non-complex numbers defined for positive values");
+        ERROR("Function 'ln()' for non-complex numbers defined for positive arguments.");
     }
     return clog(a);
 }
 
 double complex _log(double complex a) {
     if (EQI(a, 0) && creal(a) < 0) {
-        ERROR("function 'log' for non-complex numbers defined for positive values");
+        ERROR("Function 'log()' for non-complex numbers defined for positive arguments.");
     }
     return clog10(a);
 }
 
 double complex _sqrt(double complex a) {
     if (EQI(a, 0) && creal(a) < 0) {
-        ERROR("function 'sqrt' for non-complex numbers defined for positive values");
+        ERROR("Function 'sqrt()' for non-complex numbers defined only for positive arguments.");
     }
     return csqrt(a);
 }
 
 double complex _abs(double complex a) {
     if (!EQI(a, 0)) {
-        ERROR("function 'abs' is not defined for complex numbers");
+        ERROR("Function 'abs()' is not defined for complex arguments.");
     }
     return fabs(creal(a));
 }
@@ -269,21 +321,35 @@ double complex _phase(double complex a) {
 
 double complex _pow(double complex a, double complex b) {
     if (EQR(a, 0) && EQI(a, 0) && creal(b) < 0 && EQI(b, 0)) {
-        ERROR("function 'pow' is not defined for negative powers of zero");
+        ERROR("Function 'pow()' is not defined for negative powers of zero");
     }
     return cpow(a, b);
 }
 
 double complex _min(double complex a, double complex b) {
-    if (!(EQI(a, 0) && EQI(b, 0))) {
-        ERROR("function 'min' is not defined for complex numbers");
+    int left = !EQI(a, 0);
+    int right = !EQI(b, 0);
+    if (left || right) {
+        fprintf(stderr, "Function 'min()' is not define for complex arguments. ");
+        if (left && right) {
+            ERROR("Check both arguments.");
+        } else {
+            ERROR("Check %s argument.", (left ? "left" : "right"));
+        }
     }
     return (creal(a) < creal(b) ? a : b);
 }
 
 double complex _max(double complex a, double complex b) {
-    if (!(EQI(a, 0) && EQI(b, 0))) {
-        ERROR("function 'max' is not defined for complex numbers");
+    int left = !EQI(a, 0);
+    int right = !EQI(b, 0);
+    if (left || right) {
+        fprintf(stderr, "Function 'max()' is not define for complex arguments. ");
+        if (left && right) {
+            ERROR("Check both arguments.");
+        } else {
+            ERROR("Check %s argument.", (left ? "left" : "right"));
+        }
     }
     return (creal(a) > creal(b) ? a : b);
 }
