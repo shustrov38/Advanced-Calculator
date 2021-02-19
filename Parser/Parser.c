@@ -109,7 +109,10 @@ char *checkForErrors(char **dest, int n) {
 
 int parserReadExpressions(char *filename, Expression *e, int debug, int forceLowerCase) {
     FILE *in = fopen(filename, "r");
-    assert((in) && "null file ptr, error while reading");
+    if (in == NULL) {
+        fprintf(stderr, "Can't open input file.\n");
+        exit(-1);
+    }
     assert((e) && "null ptr of struct");
     char buffStr[MAX_E_SIZE];
     int number = 0;
