@@ -11,8 +11,8 @@
 #define ARG_COUNT 2
 
 int main(const int argc, const char *argv[]) {
-    char *filename = (char *) malloc(30 * sizeof(char));
-    memset(filename, 0, 30);
+    char *filename = (char *) malloc(100 * sizeof(char));
+    memset(filename, 0, 100);
     if (argc == ARG_COUNT) {
         strcpy(filename, argv[1]);
     } else {
@@ -27,7 +27,9 @@ int main(const int argc, const char *argv[]) {
     for (int i = 0; i < n; ++i) {
         rpnProcessor *outStack = rpnProcInit(10 * sizeof(char));
         Node *root = nodeInit(10 * sizeof(char));
-        opTreeGen(root, rpnFunc(outStack, e[i].formula, e[i].segCnt));
+        Stack *stack = rpnFunc(outStack, e[i].formula, e[i].segCnt);
+//        stPrint(stack);
+        opTreeGen(root, stack);
 //        opTreePrint(root, NULL);
 //        printf("\n");
         e[i].value = opTreeCalc(root, e, n);

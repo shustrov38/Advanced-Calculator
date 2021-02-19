@@ -19,17 +19,27 @@ file(GLOB SOURCES
 
 add_executable(${CMAKE_PROJECT_NAME} main.c ${SOURCES})
 
-set(CALC_TIMEOUT 1)
 
 enable_testing()
 
-if (BUILD_TESTING)
-    add_test(ExampleTest ${CMAKE_PROJECT_NAME} "../input.txt")
 
-    set_tests_properties(ExampleTest
-            PROPERTIES TIMEOUT ${CALC_TIMEOUT})
+add_test(Power_operator ${CMAKE_PROJECT_NAME} "../DataForTests/power.txt")
+add_test(Power_and_subtract ${CMAKE_PROJECT_NAME} "../DataForTests/power_and_subtraction.txt")
+add_test(More_subs ${CMAKE_PROJECT_NAME} "../DataForTests/more_subs.txt")
+add_test(Bad_function_2_arguments ${CMAKE_PROJECT_NAME} "../DataForTests/bad_function_2_args.txt")
 
-    set_tests_properties(ExampleTest PROPERTIES
-            PASS_REGULAR_EXPRESSION "a = 3.141593"
-            FAIL_REGULAR_EXPRESSION "Error!")
-endif ()
+
+set_tests_properties(Power_operator PROPERTIES
+        PASS_REGULAR_EXPRESSION "res = 256"
+        FAIL_REGULAR_EXPRESSION "Error!")
+
+set_tests_properties(Power_and_subtract PROPERTIES
+        PASS_REGULAR_EXPRESSION "res = -256"
+        FAIL_REGULAR_EXPRESSION "Error!")
+
+set_tests_properties(More_subs PROPERTIES
+        PASS_REGULAR_EXPRESSION "res = 13"
+        FAIL_REGULAR_EXPRESSION "Error!")
+
+set_tests_properties(Bad_function_2_arguments PROPERTIES
+        WILL_FAIL FALSE)

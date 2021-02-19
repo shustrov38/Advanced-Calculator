@@ -117,7 +117,8 @@ void opTreePrint(Node *node, Node *parent) {
     switch (node->state) {
         case OPERATION:
             need = (parent != NULL) && ((PRIORITY(node->value) == SUM && PRIORITY(parent->value) == PROD) ||
-                                        (PRIORITY(node->value) == SUM && PRIORITY(parent->value) == POWER));
+                                        (getOpID(node->value) != VAR && getOpID(node->value) != NUM &&
+                                         PRIORITY(parent->value) == POWER));
             if (need) printf("(");
             opTreePrint(node->left, node);
             printf("%s", node->value);

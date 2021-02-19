@@ -22,12 +22,18 @@ void stPush(Stack *stack, char *data) {
 }
 
 char *stTop(Stack *stack) {
-    assert(stack->size > 0 && "stack is empty");
+    if (stack->size == 0) {
+        fprintf(stderr, "Stack is empty.\n");
+        exit(-1);
+    }
     return stack->data[stack->size - 1];
 }
 
 void stPop(Stack *stack) {
-    assert(stack->size > 0 && "stack is empty");
+    if (stack->size == 0) {
+        fprintf(stderr, "Stack is empty.\n");
+        exit(-1);
+    }
     free(stTop(stack));
     stack->size--;
 }

@@ -123,9 +123,9 @@ void *checkForErrors(char **dest, int dlenght) {
             }
         }
         else if (IS_FUNC_1ARG(dest[i])) { // check for {1 arg func} exception
-            if (!(IS_VAR(dest[i + 2]) || IS_NUM(dest[i + 2]) || IS_FUNC_1ARG(dest[i+2]) || IS_FUNC_2ARG(dest[i+2]))) {
-                ERROR("wrong '%s' function error\n", dest[i]);
-            }
+//            if (!(IS_VAR(dest[i + 2]) || IS_NUM(dest[i + 2]) || IS_FUNC_1ARG(dest[i+2]) || IS_FUNC_2ARG(dest[i+2]))) {
+//                ERROR("wrong '%s' function error\n", dest[i]);
+//            }
         } // need to fix ','
 //        else if (IS_FUNC_2ARG(dest[i])) {
 //            if() {

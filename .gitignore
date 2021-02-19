@@ -1,5 +1,5 @@
 # input file
-*.txt
+input.txt
 
 # IDE files
 .idea
