@@ -8,7 +8,9 @@
 #include "Graph/graph.h"
 #include "OpTree/tree.h"
 
-int main() {
+
+
+    int main() {
     Expression *e = createExpressions();
     int n = parserReadExpressions("../input.txt", e, 0, 1);
     prepareVariables(e, n);
@@ -28,4 +30,7 @@ int main() {
         printf("\n");
     }
     return EXIT_SUCCESS;
-}
+
+
+
+    }

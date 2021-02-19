@@ -40,3 +40,12 @@ int expressionIsValid(OpID *mask);
 OpID *getSyntax(Expression E);
 
 #endif //ADVANCED_CALCULATOR_PARSER_H
+
+
+//TODO:
+// 1) check complex NUM
+// 2) check ',' in FUNC_1ARG (getOpID()==COM)
+// 3) make FUNC_2ARG checker
+// 4) check for bracket balance and empty brackets
+// 5) check on FUNCTIONS in a raw
+// 6) get the reason of error on the output
