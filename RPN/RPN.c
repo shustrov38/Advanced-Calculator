@@ -9,9 +9,9 @@ rpnProcessor *rpnProcInit(int elementSize) {
     return stackVault;
 }
 
+
 Stack *rpnFunc(rpnProcessor *stack, char **string, int size) {
-    int openBracket = 0, closeBracket = 0;
-    int func = 0;
+    int openBracket = 0;
 
     assert(size > 0 && string != NULL);
     for (int i = 0; i < size; ++i) {
@@ -19,35 +19,48 @@ Stack *rpnFunc(rpnProcessor *stack, char **string, int size) {
             stPush(stack->finalStack, string[i]);
         }
 
-        if (strcmp(string[i], ",") == 0 && strcmp(stTop(stack->opStack), "(" ) != 0){
+        if (strcmp(string[i], ",") == 0 && strcmp(stTop(stack->opStack), "(") != 0) {
             stPush(stack->finalStack, stTop(stack->opStack));
             stPop(stack->opStack);
         }
 
 
-        if (IS_OPER(string[i]) || IS_FUNC_1ARG(string[i]) || IS_FUNC_2ARG(string[i])) {
+        if ((IS_OPER(string[i]) || IS_FUNC_1ARG(string[i]) || IS_FUNC_2ARG(string[i]))) {
             if (stack->opStack->size != 0 && (IS_OPER(stTop(stack->opStack)) || IS_FUNC_1ARG(stTop(stack->opStack)) ||
                                               IS_FUNC_2ARG(stTop(stack->opStack)))) {
-
-                if (PRIORITY(string[i]) > PRIORITY(stTop(stack->opStack))) {
+                if (!strcmp(string[i], "^")) {
                     stPush(stack->opStack, string[i]);
+                    ++i;
+                    if (IS_VAR(string[i]) || IS_CONST(string[i]) || getOpID(string[i]) == NUM) {
+                        stPush(stack->finalStack, string[i]);
+                    } else if (IS_OPER(string[i]) || IS_FUNC_1ARG(string[i]) ||
+                               IS_FUNC_2ARG(string[i])) {
+                        stPush(stack->opStack, string[i]);
+                    }
                 } else {
-                    if (strcmp(string[i], "^") == 0 && strcmp(stTop(stack->opStack), "^") == 0) {
+                    if (PRIORITY(string[i]) > PRIORITY(stTop(stack->opStack))) {
                         stPush(stack->opStack, string[i]);
                     } else {
-                        if ((IS_FUNC_2ARG(string[i]) || IS_FUNC_1ARG(string[i])) &&
-                            strcmp((stTop(stack->opStack)), "^") == 0) {
-                            stPush(stack->opStack, string[i]);
-                        } else {
-                            while(stack->opStack->size != 0 && PRIORITY(string[i]) <= PRIORITY(stTop(stack->opStack)) ) {
-                                stPush(stack->finalStack, stTop(stack->opStack));
-                                stPop(stack->opStack);
-                            }
-                            stPush(stack->opStack, string[i]);
+                        while (stack->opStack->size != 0 && PRIORITY(string[i]) <= PRIORITY(stTop(stack->opStack))) {
+                            stPush(stack->finalStack, stTop(stack->opStack));
+                            stPop(stack->opStack);
                         }
+                        stPush(stack->opStack, string[i]);
                     }
                 }
-            } else stPush(stack->opStack, string[i]);
+            } else {
+                if (!strcmp(string[i], "^")) {
+                    stPush(stack->opStack, string[i]);
+                    ++i;
+                    if (IS_VAR(string[i]) || IS_CONST(string[i]) || getOpID(string[i]) == NUM) {
+                        stPush(stack->finalStack, string[i]);
+                    } else if (IS_OPER(string[i]) || IS_FUNC_1ARG(string[i]) ||
+                               IS_FUNC_2ARG(string[i]) || !strcmp(string[i], "^")) {
+                        stPush(stack->opStack, string[i]);
+                    }
+                    ++i;
+                } else stPush(stack->opStack, string[i]);
+            }
         }
 
         if (strcmp(string[i], "(") == 0) {
@@ -61,32 +74,27 @@ Stack *rpnFunc(rpnProcessor *stack, char **string, int size) {
                 stPop(stack->opStack);
             }
             stPop(stack->opStack);
-            if (stack->opStack->size  && (IS_FUNC_1ARG(stTop(stack->opStack)) || IS_FUNC_2ARG(stTop(stack->opStack)))) {
+            if (stack->opStack->size && (IS_FUNC_1ARG(stTop(stack->opStack)) || IS_FUNC_2ARG(stTop(stack->opStack)))) {
                 stPush(stack->finalStack, stTop(stack->opStack));
                 stPop(stack->opStack);
-            }
-            if(stack->opStack->size && strcmp(stTop(stack->opStack), "^") == 0){
-                stPush(stack->finalStack, stTop(stack->opStack));
-                stPop(stack->opStack);
-                if(stack->opStack->size && strcmp(stTop(stack->opStack), "-") == 0){
-                    stPush(stack->finalStack, stTop(stack->opStack));
-                    stPop(stack->opStack);
-                }
             }
             openBracket--;
         }
-//        //DEBUG
-//        printf("op");
-//        stPrint(stack->opStack);
-//        printf("final");
-//        stPrint(stack->finalStack);
-//        //DEBUG
-    }
-    while (stack->opStack->size != 0) {
-        stPush(stack->finalStack, stTop(stack->opStack));
-        stPop(stack->opStack);
+        //DEBUG
+        printf("op");
+        stPrint(stack->opStack);
+        printf("final");
+        stPrint(stack->finalStack);
+        //DEBUG
+
     }
 
+    while (stack->opStack->size != 0) {
+        stPush(stack->finalStack,
+               stTop(stack->opStack));
+        stPop(stack->opStack);
+    }
     return stack->finalStack;
 }
+
 
