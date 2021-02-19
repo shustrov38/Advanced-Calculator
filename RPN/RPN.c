@@ -80,11 +80,11 @@ Stack *rpnFunc(rpnProcessor *stack, char **string, int size) {
             openBracket--;
         }
         //DEBUG
-        printf("op");
-        stPrint(stack->opStack);
-        printf("final");
-        stPrint(stack->finalStack);
-        printf("i = %d\n", i);
+//        printf("op");
+//        stPrint(stack->opStack);
+//        printf("final");
+//        stPrint(stack->finalStack);
+//        printf("i = %d\n", i);
         //DEBUG
 
     }
@@ -94,7 +94,7 @@ Stack *rpnFunc(rpnProcessor *stack, char **string, int size) {
                stTop(stack->opStack));
         stPop(stack->opStack);
     }
-    stPrint(stack->finalStack);
+//  stPrint(stack->finalStack);
     return stack->finalStack;
 }
 
