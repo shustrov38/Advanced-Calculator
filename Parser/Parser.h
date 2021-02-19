@@ -33,11 +33,8 @@ int parserReadExpressions(char *filename, Expression *parsedExpr, int debug, int
 
 void destroyExpressionsArray(Expression *E);
 
-int splitExpression(char *str, char **dest, char divs[]);
+//int splitExpression(char *str, char **dest, char divs[]);
 
-int expressionIsValid(OpID *mask);
-
-OpID *getSyntax(Expression E);
 
 #endif //ADVANCED_CALCULATOR_PARSER_H
 
