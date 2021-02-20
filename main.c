@@ -28,10 +28,14 @@ int main(const int argc, const char *argv[]) {
         rpnProcessor *outStack = rpnProcInit(10 * sizeof(char));
         Node *root = nodeInit(10 * sizeof(char));
         Stack *stack = rpnFunc(outStack, e[i].formula, e[i].segCnt);
-//        stPrint(stack);
+#ifdef __EXP_DEBUG__
+        stPrint(stack);
+#endif
         opTreeGen(root, stack);
-//        opTreePrint(root, NULL);
-//        printf("\n");
+#ifdef __EXP_DEBUG__
+        opTreePrint(root, NULL);
+        printf("\n");
+#endif
         e[i].value = opTreeCalc(root, e, n);
     }
 

@@ -56,7 +56,16 @@ int splitExpression(char *src, char **dest, char divs[]) {
         } else {
             z = 0;
             if (!opF) k++;
-            tmpStr[k++][0] = src[i++];
+            tmpStr[k][0] = src[i];
+            // check for unary minus
+            if (src[i] == '-') {
+                if (i == 0 || tmpStr[k - 1][0] == '=' || tmpStr[k - 1][0] == '(' || tmpStr[k - 1][0] == ',') {
+                    tmpStr[k][1] = '-';
+                }
+            }
+            // end check
+            ++k;
+            ++i;
             opF = 1;
         }
     }
@@ -76,53 +85,49 @@ void *checkForErrors(char **dest, int dlenght) {
         if (getOpID(dest[i]) == OPB) {
             brCnt++;
 
-        }
-        else if (getOpID(dest[i]) == CLB) {
+        } else if (getOpID(dest[i]) == CLB) {
             brCnt--;
-            if (i>0 && getOpID(dest[i-1]) == OPB) {
+            if (i > 0 && getOpID(dest[i - 1]) == OPB) {
                 ERROR("BAD EXPRESSION NOTATION : empty brackets");
             }
         }
-        if (brCnt < 0) {ERROR("BAD EXPRESSION NOTATION : wrong bracket sequence");}
+        if (brCnt < 0) { ERROR("BAD EXPRESSION NOTATION : wrong bracket sequence"); }
         if (IS_OPER(dest[i])) { // check for {binary operand} exception
             if (i == 0 || IS_OPER(dest[i - 1]) || IS_OPER(dest[i + 1])) {
                 ERROR("operator '%s' must have two operands\n", dest[i]);
             }
-        }
-        else if (IS_NUM(dest[i])) { // check for {num vals} exception
+        } else if (IS_NUM(dest[i])) { // check for {num vals} exception
             int pointCnt = 0;
-            if (dest[i][0] == '0' && dest[i][1] != '\0' && dest[i][1] != '.' ) {
+            if (dest[i][0] == '0' && dest[i][1] != '\0' && dest[i][1] != '.') {
                 ERROR("BAD NUMBER : wrong number input '%s'\n", dest[i]);
             }
             for (int j = 0; dest[i][j] != '\0'; j++) {
                 if (dest[i][j] == '.') {
                     pointCnt++;
-                    if(dest[i][j+1]=='\0') {
-                        ERROR("BAD NUMBER : wrong float value notation '%s'\n",dest[i]);
+                    if (dest[i][j + 1] == '\0') {
+                        ERROR("BAD NUMBER : wrong float value notation '%s'\n", dest[i]);
                     }
-                    if (j>0 && pointCnt>1){
-                        ERROR("BAD NUMBER : wrong float value notation '%s'\n",dest[i]);
+                    if (j > 0 && pointCnt > 1) {
+                        ERROR("BAD NUMBER : wrong float value notation '%s'\n", dest[i]);
                     }
-                }
-                else if (!(dest[i][j] >= '0' && dest[i][j] <= '9' || dest[i][j]=='.' || dest[i][j]=='j')){ // appropriate char check
+                } else if (!(dest[i][j] >= '0' && dest[i][j] <= '9' || dest[i][j] == '.' ||
+                             dest[i][j] == 'j')) { // appropriate char check
                     ERROR("BAD NUMBER : wrong number char '%s'\n", dest[i]);
-                }
-                else if (dest[i][j]=='j' && dest[i][j+1] != '\0'){
-                    ERROR("BAD NUMBER : wrong complex value notation '%s'\n",dest[i]);
+                } else if (dest[i][j] == 'j' && dest[i][j + 1] != '\0') {
+                    ERROR("BAD NUMBER : wrong complex value notation '%s'\n", dest[i]);
                 }
             }
-        }
-        else if (IS_VAR(dest[i])) { // check for {var names} exception
-            if (!((dest[i][0] >= 'a' && dest[i][0] <= 'z')||(dest[i][0]=='_'))) {
+        } else if (IS_VAR(dest[i])) { // check for {var names} exception
+            if (!((dest[i][0] >= 'a' && dest[i][0] <= 'z') || (dest[i][0] == '_'))) {
                 ERROR("BAD VAR NAME : explicit char in variable name '%s'\n", dest[i]);
             }
-            for (int j = 1; dest[i][j] != '\0'; j++){
-                if (!((dest[i][j] >= 'a' && dest[i][j] <= 'z')||(dest[i][j] >= '0' && dest[i][j] <= '9')||(dest[i][j]=='_'))) {
+            for (int j = 1; dest[i][j] != '\0'; j++) {
+                if (!((dest[i][j] >= 'a' && dest[i][j] <= 'z') || (dest[i][j] >= '0' && dest[i][j] <= '9') ||
+                      (dest[i][j] == '_'))) {
                     ERROR("BAD VAR NAME : explicit char in variable name '%s'\n", dest[i]);
                 }
             }
-        }
-        else if (IS_FUNC_1ARG(dest[i])) { // check for {1 arg func} exception
+        } else if (IS_FUNC_1ARG(dest[i])) { // check for {1 arg func} exception
 //            if (!(IS_VAR(dest[i + 2]) || IS_NUM(dest[i + 2]) || IS_FUNC_1ARG(dest[i+2]) || IS_FUNC_2ARG(dest[i+2]))) {
 //                ERROR("wrong '%s' function error\n", dest[i]);
 //            }
