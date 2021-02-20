@@ -47,6 +47,8 @@ double complex opTreeCalc(Node *node, Expression *e, int n) {
     double complex b = opTreeCalc(node->right, e, n);
 
     switch (getOpID(node->value)) {
+        case UMNS:
+            return _umns(b);
         case PLS:
             return _sum(a, b);
         case MNS:

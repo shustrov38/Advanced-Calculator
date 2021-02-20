@@ -171,6 +171,10 @@ void printNum(double complex value) {
     }
 }
 
+double complex _umns(double complex a) {
+    return -a;
+}
+
 double complex _sum(double complex a, double complex b) {
     return a + b;
 }
