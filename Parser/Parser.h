@@ -40,7 +40,6 @@ void destroyExpressionsArray(Expression *E);
 
 
 //TODO:
-// 1) check complex NUM
 // 2) check ',' in FUNC_1ARG (getOpID()==COM)
 // 3) make FUNC_2ARG checker
 // 4) check for bracket balance and empty brackets
