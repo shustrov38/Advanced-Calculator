@@ -33,7 +33,7 @@ void opTreeGen(Node *node, Stack *stack) {
     if (node->state != BASIC) {
         node->right = nodeInit(node->elementSize);
         opTreeGen(node->right, stack);
-        if (node->state != FUNCTION1) {
+        if (node->state != FUNCTION1 && !IS_UOPER(node->value)) {
             node->left = nodeInit(node->elementSize);
             opTreeGen(node->left, stack);
         }
