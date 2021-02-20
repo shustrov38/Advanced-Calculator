@@ -13,13 +13,14 @@
 #include <math.h>
 
 // start enum index for operations
-#define OPS_H_OPERATIONS 10
+#define OPS_H_OPERATIONS_U 10
+#define OPS_H_OPERATIONS_B 20
 // start enum index for functions with 1 argument
-#define OPS_H_FUNCTIONS_1ARG 30
+#define OPS_H_FUNCTIONS_1ARG 40
 // start enum index for functions with 2 arguments
-#define OPS_H_FUNCTIONS_2ARG 50
+#define OPS_H_FUNCTIONS_2ARG 60
 // start enum index for constants
-#define OPS_H_CONSTANTS 70
+#define OPS_H_CONSTANTS 80
 // enum index for variable
 #define OPS_H_VARIABLE 9999
 
@@ -33,7 +34,13 @@
 #define IS_NUM(X) (NUM == getOpID(X))
 
 // check if (X) is operation
-#define IS_OPER(X) (OPS_H_OPERATIONS < getOpID(X) && getOpID(X) < OPS_H_FUNCTIONS_1ARG)
+#define IS_UOPER(X) (OPS_H_OPERATIONS_U < getOpID(X) && getOpID(X) < OPS_H_OPERATIONS_B)
+
+// check if (X) is operation
+#define IS_OPER(X) (OPS_H_OPERATIONS_B < getOpID(X) && getOpID(X) < OPS_H_FUNCTIONS_1ARG)
+
+// check if (X) is power operation ('^')
+#define IS_PWR(X) (PRIORITY(X) == POWER)
 
 // check if (X) is function with 1 argument
 #define IS_FUNC_1ARG(X) (OPS_H_FUNCTIONS_1ARG < getOpID(X) && getOpID(X) < OPS_H_FUNCTIONS_2ARG)
@@ -49,8 +56,9 @@
 
 typedef enum {
     EQL, OPB, CLB, COM, NUM,
-    OPERATIONS = OPS_H_OPERATIONS,
+    OPERATIONS_U = OPS_H_OPERATIONS_U,
     UMNS,                           // unary operations
+    OPERATIONS_B = OPS_H_OPERATIONS_B,
     PLS, MNS, MUL, DIV, MOD, PWR,   // common operations
     AND, OR, XOR,                   // binary operations
     FUNCTIONS_1ARG = OPS_H_FUNCTIONS_1ARG,

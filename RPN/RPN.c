@@ -97,5 +97,3 @@ Stack *rpnFunc(rpnProcessor *stack, char **string, int size) {
 //  stPrint(stack->finalStack);
     return stack->finalStack;
 }
-
-

@@ -3,11 +3,12 @@ project(Advanced_Calculator C)
 
 set(CMAKE_C_STANDARD 11)
 
-#set(DEBUG_VAR OFF)
-#
-#if (DEBUG_VAR)
-#    add_compile_definitions(__GRAPH_DEBUG__)
-#endif ()
+set(DEBUG_VAR OFF)
+
+if (DEBUG_VAR)
+    add_compile_definitions(__GRAPH_DEBUG__)
+    add_compile_definitions(__EXP_DEBUG__)
+endif ()
 
 file(GLOB SOURCES
         Stack/stack.?
