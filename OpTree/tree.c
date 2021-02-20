@@ -20,7 +20,7 @@ void opTreeGen(Node *node, Stack *stack) {
     strcpy(node->value, stTop(stack));
     stPop(stack);
 
-    if (IS_OPER(node->value)) {
+    if (IS_OPER(node->value) || IS_UOPER(node->value)) {
         node->state = OPERATION;
     } else if (IS_FUNC_1ARG(node->value)) {
         node->state = FUNCTION1;
