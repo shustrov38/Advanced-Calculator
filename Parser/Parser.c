@@ -36,6 +36,11 @@ Expression *createExpressions() {
 
 int splitExpression(char *src, char **dest, char divs[]) {
     assert((src) && "given null str ptr");
+
+    int lastValCh = strlen(src)-1;
+    while(src[lastValCh] == ' '  || src[lastValCh] == '\n' || src[lastValCh] == '\t') src[lastValCh--] = '\0';
+    //printf("%s", src);
+
     char tmpStr[100][10];
     for (int i = 0; i < 100; i++) {
         memset(tmpStr[i], 0, 10);
@@ -44,8 +49,8 @@ int splitExpression(char *src, char **dest, char divs[]) {
     int k = 0;
     int z = 0;
     int opF = 1; //is op flag for ch
-    while (src[i] != '\n' && src[i] != '\0') {
-        while (i < strlen(src) - 1 && (src[i] == ' ' || src[i] == '\t')) i++;
+    while (src[i] != '\n' && src[i] != '\0' && src[i] != '\r') {
+        while (i < strlen(src)-1 && (src[i] == ' ' || src[i] == '\t')) i++;
         int dvF = 0;
         for (int j = 0; j < strlen(divs); j++) {
             if (src[i] == divs[j]) dvF = 1;
@@ -205,9 +210,15 @@ int parserReadExpressions(char *filename, Expression *e, int debug, int forceLow
         while (e[number].formula[i][0] != '\0') {
             assert(getOpID(e[number].formula[i]) && "null opId");
             if (getOpID(e[number].formula[i]) == VAR) {
-                strcpy(e[number].dependencies[j++], e[number].formula[i]);
-                assert(e[number].dependencies[j - 1] && "null str after strcpy at building dependencies");
-                e[number].evenDependenciesCnt++;
+                int uniqDep = 1;
+                for(int l = 0; l < e[number].evenDependenciesCnt; l++){
+                    if(!strcmp(e[number].formula[i],e[number].dependencies[l])) uniqDep = 0;
+                }
+                if (uniqDep){
+                    strcpy(e[number].dependencies[j++], e[number].formula[i]);
+                    assert(e[number].dependencies[j - 1] && "null str after strcpy at building dependencies");
+                    e[number].evenDependenciesCnt++;
+                }
             }
             i++;
         }

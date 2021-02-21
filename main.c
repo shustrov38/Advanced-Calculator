@@ -20,7 +20,7 @@ int main(const int argc, const char *argv[]) {
     }
 
     Expression *e = createExpressions();
-    int n = parserReadExpressions(filename, e, 0, 1);
+    int n = parserReadExpressions(filename, e, 1, 1);
 
     prepareVariables(e, n);
 
