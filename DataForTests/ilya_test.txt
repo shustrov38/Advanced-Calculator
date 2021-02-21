@@ -1,6 +1,6 @@
 numerator/denominator+sin(PI/2)
 denominator=11.5+sqrt(z4)
-numerator=z1*(sin(z2)/cos(z2))+z3-0.62
+numerator=z1*tg(z2)+z3-0.62
 z1=pow(x,5)+pow(x,7)
 z2=1+log(abs(x))
 z3=abs(x-a)

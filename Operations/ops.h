@@ -6,12 +6,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define _GNU_SOURCE
-#include <complex.h>
-
-#define _USE_MATH_DEFINES
-#include <math.h>
-
 // start enum index for operations
 #define OPS_H_OPERATIONS_U 10
 #define OPS_H_OPERATIONS_B 20
@@ -62,7 +56,7 @@ typedef enum {
     PLS, MNS, MUL, DIV, MOD, PWR,   // common operations
     AND, OR, XOR,                   // binary operations
     FUNCTIONS_1ARG = OPS_H_FUNCTIONS_1ARG,
-    SIN, COS, LN, LOG, SQRT, ABS, EXP, REAL, IMAG, MAG, PHASE,
+    SIN, COS, TG, LN, LOG, SQRT, ABS, EXP, REAL, IMAG, MAG, PHASE,
     FUNCTIONS_2ARG = OPS_H_FUNCTIONS_2ARG,
     POW, MAX, MIN,
     CONSTANTS = OPS_H_CONSTANTS,

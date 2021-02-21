@@ -55,6 +55,9 @@ OpID getOpID(char *op) {
     if (!strcmp(op, "cos"))
         return COS;
 
+    if (!strcmp(op, "tg"))
+        return TG;
+
     if (!strcmp(op, "log"))
         return LOG;
 
@@ -119,6 +122,7 @@ Priority getOpPriority(OpID id) {
             return PROD;
         case SIN:
         case COS:
+        case TG:
         case LOG:
         case LN:
         case SQRT:

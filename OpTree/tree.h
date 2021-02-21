@@ -31,7 +31,7 @@ Node *nodeInit(int elementSize);
 
 void opTreeGen(Node *node, Stack *stack);
 
-double complex opTreeCalc(Node *node, Expression *e, int n);
+double complex opTreeCalc(Node *node, Expression *e, int ind, int n);
 
 void opTreePrint(Node *node, Node *parent);
 

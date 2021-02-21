@@ -37,15 +37,15 @@ Expression *createExpressions() {
     return tmp;
 }
 
-int splitExpression(char *src, char **dest, char *divs) {
+int splitExpression(char *src, char **dest, char divs[]) {
     assert((src) && "given null str ptr");
 
     int lastValCh = (int)strlen(src) - 1;
     while (src[lastValCh] == ' ' || src[lastValCh] == '\n' || src[lastValCh] == '\t') src[lastValCh--] = '\0';
 
-    char tmpStr[100][10];
-    for (int i = 0; i < 100; i++) {
-        memset(tmpStr[i], 0, 10);
+    char tmpStr[MAX_ARRAY_SIZE][MAX_V_NAME_SIZE];
+    for (int i = 0; i < MAX_ARRAY_SIZE; i++) {
+        memset(tmpStr[i], 0, MAX_V_NAME_SIZE);
     }
     int i = 0;
     int k = 0;
@@ -77,7 +77,7 @@ int splitExpression(char *src, char **dest, char *divs) {
         }
     }
 
-    for (i = 0; i < 100; ++i) {
+    for (i = 0; i < MAX_ARRAY_SIZE; ++i) {
         strcpy(dest[i], tmpStr[i]);
     }
 
@@ -208,8 +208,8 @@ int parserReadExpressions(char *filename, Expression *e) {
             for (int segI = 0; segI < e[number].segCnt - 2; segI++) {
                 strcpy(e[number].formula[segI], e[number].formula[segI + 2]);
             }
-            memset(e[number].formula[e[number].segCnt - 1], 0, 10);
-            memset(e[number].formula[e[number].segCnt - 2], 0, 10);
+            memset(e[number].formula[e[number].segCnt - 1], 0, MAX_V_NAME_SIZE);
+            memset(e[number].formula[e[number].segCnt - 2], 0, MAX_V_NAME_SIZE);
             e[number].segCnt -= 2;
         }
         int i = 0;

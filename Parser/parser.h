@@ -7,10 +7,11 @@
 #include <string.h>
 #include <stdlib.h>
 #include <assert.h>
+#include <complex.h>
 
 #include "../Operations/ops.h"
 
-#define MAX_V_NAME_SIZE 10
+#define MAX_V_NAME_SIZE 20
 
 typedef struct {
     char *varName; // name of var, null if expression is just a number

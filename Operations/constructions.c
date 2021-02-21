@@ -52,6 +52,7 @@ double complex _mul(double complex a, double complex b, Expression * e) {
 
 double complex _div(double complex a, double complex b, Expression *e) {
     if (EQC(b, 0)) {
+        printFormula(e);
         ERROR("Division by zero.");
     }
     return a / b;
@@ -186,6 +187,14 @@ double complex _sin(double complex a, Expression *e) {
 
 double complex _cos(double complex a, Expression *e) {
     return ccos(a);
+}
+
+double complex _tg(double complex a, Expression *e) {
+    if (EQC(_cos(a, e), 0)) {
+        printFormula(e);
+        ERROR("Function 'tg()' is not define for phase pi/2 + pi*k.");
+    }
+    return _sin(a, e) / _cos(a, e);
 }
 
 double complex _ln(double complex a, Expression *e) {

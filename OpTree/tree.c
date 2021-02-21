@@ -41,61 +41,61 @@ void opTreeGen(Node *node, Stack *stack) {
     }
 }
 
-double complex opTreeCalc(Node *node, Expression *e, int n) {
+double complex opTreeCalc(Node *node, Expression *e, int ind, int n) {
     if (node == NULL) return 0;
 
-    double complex a = opTreeCalc(node->left, e, n);
-    double complex b = opTreeCalc(node->right, e, n);
+    double complex a = opTreeCalc(node->left, e, ind, n);
+    double complex b = opTreeCalc(node->right, e, ind, n);
 
     switch (getOpID(node->value)) {
         case UMNS:
-            return _umns(b, e);
+            return _umns(b, &e[ind]);
         case PLS:
-            return _sum(a, b, e);
+            return _sum(a, b, &e[ind]);
         case MNS:
-            return _sub(a, b, e);
+            return _sub(a, b, &e[ind]);
         case MUL:
-            return _mul(a, b, e);
+            return _mul(a, b, &e[ind]);
         case DIV:
-            return _div(a, b, e);
+            return _div(a, b, &e[ind]);
         case MOD:
-            return _mod(a, b, e);
+            return _mod(a, b, &e[ind]);
         case PWR:
-            return _pwr(a, b, e);
+            return _pwr(a, b, &e[ind]);
         case AND:
-            return _and(a, b, e);
+            return _and(a, b, &e[ind]);
         case OR:
-            return _or(a, b, e);
+            return _or(a, b, &e[ind]);
         case XOR:
-            return _xor(a, b, e);
+            return _xor(a, b, &e[ind]);
         case SIN:
-            return _sin(b, e);
+            return _sin(b, &e[ind]);
         case COS:
-            return _cos(b, e);
+            return _cos(b, &e[ind]);
         case LN:
-            return _ln(b, e);
+            return _ln(b, &e[ind]);
         case LOG:
-            return _log(b, e);
+            return _log(b, &e[ind]);
         case SQRT:
-            return _sqrt(b, e);
+            return _sqrt(b, &e[ind]);
         case ABS:
-            return _abs(b, e);
+            return _abs(b, &e[ind]);
         case EXP:
-            return _exp(b, e);
+            return _exp(b, &e[ind]);
         case REAL:
-            return _real(b, e);
+            return _real(b, &e[ind]);
         case IMAG:
-            return _imag(b, e);
+            return _imag(b, &e[ind]);
         case MAG:
-            return _mag(b, e);
+            return _mag(b, &e[ind]);
         case PHASE:
-            return _phase(b, e);
+            return _phase(b, &e[ind]);
         case POW:
-            return _pow(a, b, e);
+            return _pow(a, b, &e[ind]);
         case MAX:
-            return _max(a, b, e);
+            return _max(a, b, &e[ind]);
         case MIN:
-            return _min(a, b, e);
+            return _min(a, b, &e[ind]);
         case PI:
             return _pi();
         case EULER:

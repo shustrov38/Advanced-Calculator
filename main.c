@@ -2,7 +2,6 @@
 #include <string.h>
 
 #include "Parser/parser.h"
-#include "Operations/ops.h"
 #include "Stack/stack.h"
 #include "RPN/RPN.h"
 #include "Graph/graph.h"
@@ -37,7 +36,7 @@ int main(const int argc, const char *argv[]) {
         opTreePrint(root, NULL);
         printf("\n");
 #endif //__EXP_DEBUG__
-        e[i].value = opTreeCalc(root, &e[i], n);
+        e[i].value = opTreeCalc(root, e, i, n);
     }
 
     for (int i = 0; i < n; ++i) {

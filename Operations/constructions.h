@@ -1,6 +1,11 @@
 #ifndef ADVANCED_CALCULATOR_CONSTRUCTIONS_H
 #define ADVANCED_CALCULATOR_CONSTRUCTIONS_H
 
+#define _GNU_SOURCE
+#include <complex.h>
+
+#define _USE_MATH_DEFINES
+#include <math.h>
 
 #include "../Parser/parser.h"
 
@@ -37,6 +42,8 @@ double complex _xor(double complex a, double complex b, Expression *e);
 double complex _sin(double complex a, Expression *e);
 
 double complex _cos(double complex a, Expression *e);
+
+double complex _tg(double complex a, Expression *e);
 
 double complex _ln(double complex a, Expression *e);
 
