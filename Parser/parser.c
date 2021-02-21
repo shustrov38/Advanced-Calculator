@@ -1,21 +1,24 @@
-#include "Parser.h"
+#include "parser.h"
 
 #define MAX_ARRAY_SIZE 100
+#define MAX_E_SIZE 100
 
-#define ERROR(...) fprintf(stderr, "\n"__VA_ARGS__); exit(-1)
+#define ERROR(...) fprintf(stderr, __VA_ARGS__); exit(-1)
 
 void initExpression(Expression *E) {
     assert((E) && "null ptr at expressions array while init");
-    for (int i = 0; i < 10; ++i) {
-        E[i].formula = (char **) malloc(100 * sizeof(char *));
-        E[i].dependencies = (char **) malloc(100 * sizeof(char *));
-        for (int j = 0; j < 100; ++j) {
-            E[i].formula[j] = (char *) malloc(10 * sizeof(char));
-            memset(E[i].formula[j], 0, 10);
-            E[i].dependencies[j] = (char *) malloc(10 * sizeof(char));
-            memset(E[i].dependencies[j], 0, 10);
+    for (int i = 0; i < MAX_ARRAY_SIZE; ++i) {
+        E[i].formula = (char **) malloc(MAX_ARRAY_SIZE * sizeof(char *));
+        E[i].rawFormula = (char *) malloc(MAX_E_SIZE * sizeof(char));
+        memset(E[i].rawFormula, 0, MAX_E_SIZE);
+        E[i].dependencies = (char **) malloc(MAX_ARRAY_SIZE * sizeof(char *));
+        for (int j = 0; j < MAX_ARRAY_SIZE; ++j) {
+            E[i].formula[j] = (char *) malloc(MAX_V_NAME_SIZE * sizeof(char));
+            memset(E[i].formula[j], 0, MAX_V_NAME_SIZE);
+            E[i].dependencies[j] = (char *) malloc(MAX_V_NAME_SIZE * sizeof(char));
+            memset(E[i].dependencies[j], 0, MAX_V_NAME_SIZE);
         }
-        E[i].varName = (char *) malloc(10 * sizeof(char));
+        E[i].varName = (char *) malloc(MAX_V_NAME_SIZE * sizeof(char));
         E[i].evenDependenciesCnt = 0;
         E[i].trueDependenciesCnt = 0;
 
@@ -34,12 +37,11 @@ Expression *createExpressions() {
     return tmp;
 }
 
-int splitExpression(char *src, char **dest, char divs[]) {
+int splitExpression(char *src, char **dest, char *divs) {
     assert((src) && "given null str ptr");
 
-    int lastValCh = strlen(src)-1;
-    while(src[lastValCh] == ' '  || src[lastValCh] == '\n' || src[lastValCh] == '\t') src[lastValCh--] = '\0';
-    //printf("%s", src);
+    int lastValCh = (int)strlen(src) - 1;
+    while (src[lastValCh] == ' ' || src[lastValCh] == '\n' || src[lastValCh] == '\t') src[lastValCh--] = '\0';
 
     char tmpStr[100][10];
     for (int i = 0; i < 100; i++) {
@@ -50,7 +52,7 @@ int splitExpression(char *src, char **dest, char divs[]) {
     int z = 0;
     int opF = 1; //is op flag for ch
     while (src[i] != '\n' && src[i] != '\0' && src[i] != '\r') {
-        while (i < strlen(src)-1 && (src[i] == ' ' || src[i] == '\t')) i++;
+        while (i < strlen(src) - 1 && (src[i] == ' ' || src[i] == '\t')) i++;
         int dvF = 0;
         for (int j = 0; j < strlen(divs); j++) {
             if (src[i] == divs[j]) dvF = 1;
@@ -84,10 +86,7 @@ int splitExpression(char *src, char **dest, char divs[]) {
     return k + (dest[k][0] != 0);
 }
 
-void *checkForErrors(char **dest, int dlenght) {
-    if (dlenght == 0) {
-        ERROR("EMPTY INPUT");
-    }
+void checkForErrors(char **dest, int dlenght) {
     int brCnt = 0;
     for (int i = 0; i < dlenght; ++i) {
         if (getOpID(dest[i]) == OPB) {
@@ -181,7 +180,7 @@ void *checkForErrors(char **dest, int dlenght) {
     if (brCnt != 0) { ERROR("BAD EXPRESSION NOTATION : wrong bracket sequence"); }
 }
 
-int parserReadExpressions(char *filename, Expression *e, int debug, int forceLowerCase) {
+int parserReadExpressions(char *filename, Expression *e) {
     FILE *in = fopen(filename, "r");
     if (in == NULL) {
         fprintf(stderr, "Can't open input file.\n");
@@ -190,10 +189,18 @@ int parserReadExpressions(char *filename, Expression *e, int debug, int forceLow
     assert((e) && "null ptr of struct");
     char buffStr[MAX_E_SIZE];
     int number = 0;
-    while (!feof(in)) {
-        fgets(buffStr, MAX_E_SIZE, in);
+    while (fgets(buffStr, MAX_E_SIZE, in)) {
+        if (!strlen(buffStr) || buffStr[0] == '\n') {
+            continue;
+        }
+        // raw
+        strcpy(e[number].rawFormula, buffStr);
+        if (e[number].rawFormula[strlen(e[number].rawFormula) - 1] == '\n') {
+            e[number].rawFormula[strlen(e[number].rawFormula) - 1] = 0;
+        }
+        // end raw
         for (int i = 0; i < strlen(buffStr); ++i) {
-            if (forceLowerCase && buffStr[i] >= 'A' && buffStr[i] <= 'Z') buffStr[i] += ('a' - 'A');
+            if (buffStr[i] >= 'A' && buffStr[i] <= 'Z') buffStr[i] += ('a' - 'A');
         }
         e[number].segCnt = splitExpression(buffStr, e[number].formula, "()=-+*^/,%&|@");
         if (e[number].formula[0] && !strcmp(e[number].formula[1], "=")) {
@@ -211,10 +218,10 @@ int parserReadExpressions(char *filename, Expression *e, int debug, int forceLow
             assert(getOpID(e[number].formula[i]) && "null opId");
             if (getOpID(e[number].formula[i]) == VAR) {
                 int uniqDep = 1;
-                for(int l = 0; l < e[number].evenDependenciesCnt; l++){
-                    if(!strcmp(e[number].formula[i],e[number].dependencies[l])) uniqDep = 0;
+                for (int l = 0; l < e[number].evenDependenciesCnt; l++) {
+                    if (!strcmp(e[number].formula[i], e[number].dependencies[l])) uniqDep = 0;
                 }
-                if (uniqDep){
+                if (uniqDep) {
                     strcpy(e[number].dependencies[j++], e[number].formula[i]);
                     assert(e[number].dependencies[j - 1] && "null str after strcpy at building dependencies");
                     e[number].evenDependenciesCnt++;
@@ -222,20 +229,20 @@ int parserReadExpressions(char *filename, Expression *e, int debug, int forceLow
             }
             i++;
         }
-        if (debug) {
-            printf("expression (%s) #%d:[ ", e[number].varName, number + 1);
-            for (i = 0; i < MAX_E_SIZE && e[number].formula[i][0] != '\0'; ++i) {
-                printf("%s ", e[number].formula[i]);
-            }
-            printf("] ");
-            if (e[number].evenDependenciesCnt > 0) {
-                printf("dependencies are: ");
-                for (i = 0; i < e[number].evenDependenciesCnt; ++i) {
-                    printf("'%s' ", e[number].dependencies[i]);
-                }
-            }
-            printf("\n");
+#ifdef __PARSER_DEBUG__
+        printf("expression (%s) #%d:[ ", e[number].varName, number + 1);
+        for (i = 0; i < MAX_E_SIZE && e[number].formula[i][0] != '\0'; ++i) {
+            printf("%s ", e[number].formula[i]);
         }
+        printf("] ");
+        if (e[number].evenDependenciesCnt > 0) {
+            printf("dependencies are: ");
+            for (i = 0; i < e[number].evenDependenciesCnt; ++i) {
+                printf("'%s' ", e[number].dependencies[i]);
+            }
+        }
+        printf("\n");
+#endif //__PARSER_DEBUG__
         checkForErrors(e[number].formula, e[number].segCnt);
         ++number;
     }
@@ -243,16 +250,16 @@ int parserReadExpressions(char *filename, Expression *e, int debug, int forceLow
     return number;
 }
 
-void destroyExpressionsArray(Expression *E) {
-    assert((E) && "null ptr, lul, nothing to delete");
-    for (int i = 0; i < 10; i++) {
-        for (int j = 0; j < 100; ++j) {
-            free(E[i].formula[j]);
-            free(E[i].dependencies[j]);
-        }
-        free(E[i].varName);
-        free(E[i].formula);
-        free(E[i].dependencies);
-    }
-    free(E);
-}
+//void destroyExpressionsArray(Expression *E) {
+//    assert((E) && "null ptr, lul, nothing to delete");
+//    for (int i = 0; i < 10; i++) {
+//        for (int j = 0; j < 100; ++j) {
+//            free(E[i].formula[j]);
+//            free(E[i].dependencies[j]);
+//        }
+//        free(E[i].varName);
+//        free(E[i].formula);
+//        free(E[i].dependencies);
+//    }
+//    free(E);
+//}

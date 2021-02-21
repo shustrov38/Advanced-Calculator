@@ -49,53 +49,53 @@ double complex opTreeCalc(Node *node, Expression *e, int n) {
 
     switch (getOpID(node->value)) {
         case UMNS:
-            return _umns(b);
+            return _umns(b, e);
         case PLS:
-            return _sum(a, b);
+            return _sum(a, b, e);
         case MNS:
-            return _sub(a, b);
+            return _sub(a, b, e);
         case MUL:
-            return _mul(a, b);
+            return _mul(a, b, e);
         case DIV:
-            return _div(a, b);
+            return _div(a, b, e);
         case MOD:
-            return _mod(a, b);
+            return _mod(a, b, e);
         case PWR:
-            return _pwr(a, b);
+            return _pwr(a, b, e);
         case AND:
-            return _and(a, b);
+            return _and(a, b, e);
         case OR:
-            return _or(a, b);
+            return _or(a, b, e);
         case XOR:
-            return _xor(a, b);
+            return _xor(a, b, e);
         case SIN:
-            return _sin(b);
+            return _sin(b, e);
         case COS:
-            return _cos(b);
+            return _cos(b, e);
         case LN:
-            return _ln(b);
+            return _ln(b, e);
         case LOG:
-            return _log(b);
+            return _log(b, e);
         case SQRT:
-            return _sqrt(b);
+            return _sqrt(b, e);
         case ABS:
-            return _abs(b);
+            return _abs(b, e);
         case EXP:
-            return _exp(b);
+            return _exp(b, e);
         case REAL:
-            return _real(b);
+            return _real(b, e);
         case IMAG:
-            return _imag(b);
+            return _imag(b, e);
         case MAG:
-            return _mag(b);
+            return _mag(b, e);
         case PHASE:
-            return _phase(b);
+            return _phase(b, e);
         case POW:
-            return _pow(a, b);
+            return _pow(a, b, e);
         case MAX:
-            return _max(a, b);
+            return _max(a, b, e);
         case MIN:
-            return _min(a, b);
+            return _min(a, b, e);
         case PI:
             return _pi();
         case EULER:

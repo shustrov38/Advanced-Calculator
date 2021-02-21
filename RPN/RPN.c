@@ -73,7 +73,7 @@ Stack *rpnFunc(rpnProcessor *stack, char **string, int size) {
         }
 
         if (strcmp(string[i], ")") == 0) {
-            while (strcmp(stTop(stack->opStack), "(")) {
+            while (strcmp(stTop(stack->opStack), "(") != 0) {
                 stPush(stack->finalStack, stTop(stack->opStack));
                 stPop(stack->opStack);
             }
@@ -85,13 +85,13 @@ Stack *rpnFunc(rpnProcessor *stack, char **string, int size) {
             }
             openBracket--;
         }
-//        //DEBUG
-//        printf("op");
-//        stPrint(stack->opStack);
-//        printf("final");
-//        stPrint(stack->finalStack);
-//        printf("i = %d\n", i);
-//        //DEBUG
+#ifdef __RPN_DEBUG__
+        printf("op");
+        stPrint(stack->opStack);
+        printf("final");
+        stPrint(stack->finalStack);
+        printf("i = %d\n", i);
+#endif //__RPN_DEBUG__
     }
 
     while (stack->opStack->size != 0) {
@@ -99,6 +99,9 @@ Stack *rpnFunc(rpnProcessor *stack, char **string, int size) {
                stTop(stack->opStack));
         stPop(stack->opStack);
     }
-//    stPrint(stack->finalStack);
+#ifdef __RPN_DEBUG__
+    stPrint(stack->finalStack);
+#endif //__RPN_DEBUG__
+
     return stack->finalStack;
 }

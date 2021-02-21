@@ -1,5 +1,7 @@
 #include "graph.h"
 
+#define ERROR(...) fprintf(stderr, __VA_ARGS__); exit(-1)
+
 typedef struct {
     int n; // count of unique variables
     char **variables;
@@ -82,8 +84,6 @@ static int compareByDependency(const void *a, const void *b) {
 }
 
 void prepareVariables(Expression *e, int n) {
-#define THROW_ERROR(...) fprintf(stderr, "\n"__VA_ARGS__); exit(-1)
-
     Graph *g = (Graph *) malloc(sizeof(Graph));
     assert(g != NULL && "bad mem allocate");
 
@@ -105,7 +105,7 @@ void prepareVariables(Expression *e, int n) {
         }
         for (int j = 0; j < g->n; ++j) {
             if (!strcmp(g->variables[j], e[i].varName)) {
-                THROW_ERROR("There is more than one possible definition for variable '%s'", e[i].varName);
+                ERROR("There is more than one possible definition for variable '%s'", e[i].varName);
             }
         }
         strcpy(g->variables[g->n++], e[i].varName);
@@ -146,7 +146,7 @@ void prepareVariables(Expression *e, int n) {
             }
 
             if (u == g->n) {
-                THROW_ERROR("Have an unrecognized variable '%s' in definition of '%s'", e[i].dependencies[j], e[i].varName);
+                ERROR("Have an unrecognized variable '%s' in definition of '%s'", e[i].dependencies[j], e[i].varName);
             }
 
             g->matrix[v][u] = 1;
@@ -193,8 +193,6 @@ void prepareVariables(Expression *e, int n) {
     }
 
     qsort(e, n, sizeof(Expression), compareByDependency);
-
-#undef THROW_ERROR
 
     free(g->cnt);
     free(g->p);

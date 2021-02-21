@@ -7,7 +7,7 @@
 #include <string.h>
 #include "assert.h"
 
-#include "../Parser/Parser.h"
+#include "../Parser/parser.h"
 
 void prepareVariables(Expression *e, int n);
 

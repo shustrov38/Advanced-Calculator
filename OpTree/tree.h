@@ -9,7 +9,8 @@
 
 #include "../Stack/stack.h"
 #include "../Operations/ops.h"
-#include "../Parser/Parser.h"
+#include "../Parser/parser.h"
+#include "../Operations/constructions.h"
 
 typedef enum {
     OPERATION,

@@ -6,15 +6,16 @@
 #include <malloc.h>
 #include <string.h>
 #include <stdlib.h>
-#include "assert.h"
+#include <assert.h>
+
 #include "../Operations/ops.h"
 
 #define MAX_V_NAME_SIZE 10
-#define MAX_E_SIZE 100
 
-typedef struct Expression {
+typedef struct {
     char *varName; // name of var, null if expression is just a number
     char **formula; // expression splitted to pseudo string
+    char *rawFormula;
     char **dependencies; //vars, on which expression depends, according to plain scanning
     int evenDependenciesCnt; // num of dependencies after scan
     int trueDependenciesCnt; // num of dependencies after reverse+BFS
@@ -25,19 +26,7 @@ typedef struct Expression {
 
 Expression *createExpressions();
 
-int parserReadExpressions(char *filename, Expression *parsedExpr, int debug, int forceLowerCase);
-
-void destroyExpressionsArray(Expression *E);
-
-//int splitExpression(char *str, char **dest, char divs[]);
+int parserReadExpressions(char *filename, Expression *parsedExpr);
 
 
 #endif //ADVANCED_CALCULATOR_PARSER_H
-
-
-//TODO:
-// 2) check ',' in FUNC_1ARG (getOpID()==COM)
-// 3) make FUNC_2ARG checker
-// 4) check for bracket balance and empty brackets
-// 5) check on FUNCTIONS in a raw
-// 6) get the reason of error on the output
