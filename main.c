@@ -30,12 +30,12 @@ int main(const int argc, const char *argv[]) {
         Stack *stack = rpnFunc(outStack, e[i].formula, e[i].segCnt);
 #ifdef __EXP_DEBUG__
         stPrint(stack);
-#endif
+#endif //__EXP_DEBUG__
         opTreeGen(root, stack);
 #ifdef __EXP_DEBUG__
         opTreePrint(root, NULL);
         printf("\n");
-#endif
+#endif //__EXP_DEBUG__
         e[i].value = opTreeCalc(root, e, n);
     }
 

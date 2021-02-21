@@ -80,8 +80,7 @@ int splitExpression(char *src, char **dest, char divs[]) {
 }
 
 void *checkForErrors(char **dest, int dlenght) {
-    if(dlenght==0)
-    {
+    if (dlenght == 0) {
         ERROR("EMPTY INPUT");
     }
     int brCnt = 0;
@@ -89,26 +88,24 @@ void *checkForErrors(char **dest, int dlenght) {
         if (getOpID(dest[i]) == OPB) {
             brCnt++;
 
-        }
-        else if (getOpID(dest[i]) == CLB) {
+        } else if (getOpID(dest[i]) == CLB) {
             brCnt--;
             if (i > 0 && getOpID(dest[i - 1]) == OPB) {
                 ERROR("BAD EXPRESSION NOTATION : empty brackets");
             }
         }
         if (brCnt < 0) { ERROR("BAD EXPRESSION NOTATION : wrong bracket sequence"); }
-        if(getOpID(dest[i])==COM) {
-            if(i==0 || i==dlenght-1 || getOpID(dest[i-1])==OPB || getOpID(dest[i+1])==CLB) {
+        if (getOpID(dest[i]) == COM) {
+            if (i == 0 || i == dlenght - 1 || getOpID(dest[i - 1]) == OPB || getOpID(dest[i + 1]) == CLB) {
                 ERROR("wrong place for ','");
             }
         }
         if (IS_OPER(dest[i])) { // check for {binary operand} exception
             if (i == 0 || IS_OPER(dest[i - 1]) || IS_OPER(dest[i + 1]) ||
-            (getOpID(dest[i-1])==OPB || getOpID(dest[i+1])==CLB)) {
+                (getOpID(dest[i - 1]) == OPB || getOpID(dest[i + 1]) == CLB)) {
                 ERROR("operator '%s' must have two operands\n", dest[i]);
             }
-        }
-        else if (IS_NUM(dest[i])) { // check for {num vals} exception
+        } else if (IS_NUM(dest[i])) { // check for {num vals} exception
             int pointCnt = 0;
             if (dest[i][0] == '0' && dest[i][1] != '\0' && dest[i][1] != '.') {
                 ERROR("BAD NUMBER : wrong number input '%s'\n", dest[i]);
@@ -122,17 +119,14 @@ void *checkForErrors(char **dest, int dlenght) {
                     if (j > 0 && pointCnt > 1) {
                         ERROR("BAD NUMBER : wrong float value notation '%s'\n", dest[i]);
                     }
-                }
-                else if (!(dest[i][j] >= '0' && dest[i][j] <= '9' || dest[i][j] == '.' ||
+                } else if (!(dest[i][j] >= '0' && dest[i][j] <= '9' || dest[i][j] == '.' ||
                              dest[i][j] == 'j')) { // appropriate char check
                     ERROR("BAD NUMBER : wrong number char '%s'\n", dest[i]);
-                }
-                else if (dest[i][j] == 'j' && dest[i][j + 1] != '\0') {
+                } else if (dest[i][j] == 'j' && dest[i][j + 1] != '\0') {
                     ERROR("BAD NUMBER : wrong complex value notation '%s'\n", dest[i]);
                 }
             }
-        }
-        else if (IS_VAR(dest[i])) { // check for {var names} exception
+        } else if (IS_VAR(dest[i])) { // check for {var names} exception
             if (!((dest[i][0] >= 'a' && dest[i][0] <= 'z') || (dest[i][0] == '_'))) {
                 ERROR("BAD VAR NAME : explicit char in variable name '%s'\n", dest[i]);
             }
@@ -142,44 +136,40 @@ void *checkForErrors(char **dest, int dlenght) {
                     ERROR("BAD VAR NAME : explicit char in variable name '%s'\n", dest[i]);
                 }
             }
-        }
-        else if (IS_FUNC_1ARG(dest[i])) { // check for {1 arg func} exception
+        } else if (IS_FUNC_1ARG(dest[i])) { // check for {1 arg func} exception
 //            if (!(IS_VAR(dest[i + 2]) || IS_NUM(dest[i + 2]) || IS_FUNC_1ARG(dest[i+2]) || IS_FUNC_2ARG(dest[i+2])
 //            || IS_CONST(dest[i+2]))) {
 //                ERROR("wrong '%s' function error\n", dest[i]);
 //            }
-            int countBr=1;
-            for(int j=i+2;countBr!=0 && j<dlenght ;j++) {
-                if(getOpID(dest[j])==OPB) {
+            int countBr = 1;
+            for (int j = i + 2; countBr != 0 && j < dlenght; j++) {
+                if (getOpID(dest[j]) == OPB) {
                     countBr++;
-                }
-                else if(getOpID(dest[j])==CLB) {
+                } else if (getOpID(dest[j]) == CLB) {
                     countBr--;
                 }
-                if(getOpID(dest[j])==COM && countBr==1) {
-                    ERROR("FUNCTION %s ERROR: required 1 argument but more given", dest[i] );
+                if (getOpID(dest[j]) == COM && countBr == 1) {
+                    ERROR("FUNCTION %s ERROR: required 1 argument but more given", dest[i]);
                 }
             }
-        } // need to fix ','
-        else if (IS_FUNC_2ARG(dest[i])) {
+        } else if (IS_FUNC_2ARG(dest[i])) { // need to fix ','
             int countBr = 1;
             int countCom = 0;
-            for(int j=i+2;countBr!=0 && j<dlenght ;j++) {
-                if(getOpID(dest[j])==OPB) {
+            for (int j = i + 2; countBr != 0 && j < dlenght; j++) {
+                if (getOpID(dest[j]) == OPB) {
                     countBr++;
-                }
-                else if(getOpID(dest[j])==CLB) {
+                } else if (getOpID(dest[j]) == CLB) {
                     countBr--;
                 }
-                if(getOpID(dest[j])==COM && countBr==1) {
+                if (getOpID(dest[j]) == COM && countBr == 1) {
                     countCom++;
                 }
-                if(countCom==2) {
-                    ERROR("FUNCTION %s ERROR: required 2 arguments", dest[i] );
+                if (countCom == 2) {
+                    ERROR("FUNCTION %s ERROR: required 2 arguments", dest[i]);
                 }
             }
-            if(countCom!=1) {
-                ERROR("FUNCTION %s ERROR: required 2 arguments", dest[i] );
+            if (countCom != 1) {
+                ERROR("FUNCTION %s ERROR: required 2 arguments", dest[i]);
             }
         }
     }

@@ -1,7 +1,3 @@
-//
-// Created by zhvzh on 15.02.2021.
-// Designed by Hideo Kojima 14.88.1488
-
 #ifndef ADVANCED_CALCULATOR_PARSER_H
 #define ADVANCED_CALCULATOR_PARSER_H
 
