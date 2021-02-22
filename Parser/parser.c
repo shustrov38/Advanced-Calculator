@@ -58,7 +58,13 @@ int splitExpression(char *src, char **dest, char divs[]) {
     int k = 0;
     int z = 0;
     int opF = 1; //is op flag for ch
-    while (src[i] != '\n' && src[i] != '\0' && src[i] != '\r' && src[i+1] != '#') {
+    for (int ff = 0; ff < strlen(src); ff++){
+        if (src[ff] == '#'){
+            src[ff] = '\0';
+            break;
+        }
+    }
+    while (src[i] != '\n' && src[i] != '\0' && src[i] != '\r' && src[i] != '#') {
         while (i < strlen(src) - 1 && (src[i] == ' ' || src[i] == '\t')) i++;
         int dvF = 0;
         for (int j = 0; j < strlen(divs); j++) {
