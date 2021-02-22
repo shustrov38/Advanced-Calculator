@@ -50,6 +50,7 @@ int main(const int argc, const char *argv[]) {
         printf("\n");
     }
 
+    destroyExpressionsArray(e);
     free(filename);
     return EXIT_SUCCESS;
 }

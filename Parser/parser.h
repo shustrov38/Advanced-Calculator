@@ -28,6 +28,6 @@ typedef struct {
 Expression *createExpressions();
 
 int parserReadExpressions(char *filename, Expression *parsedExpr);
-
+void destroyExpressionsArray(Expression *E);
 
 #endif //ADVANCED_CALCULATOR_PARSER_H
