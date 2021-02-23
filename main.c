@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
+#include <time.h>
 
 #include "Parser/parser.h"
 #include "Stack/stack.h"
@@ -18,6 +20,10 @@ int main(const int argc, const char *argv[]) {
     } else {
         strcpy(filename, "../input.txt");
     }
+
+    rand();
+    unsigned seed = time(0);
+    srand(seed);
 
     Expression *e = createExpressions();
     int n = parserReadExpressions(filename, e);

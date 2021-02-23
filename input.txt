@@ -1,6 +1,0 @@
-# variables
-a = sqrt(2) / 2
-b = pi / 4              # angle for sine
-
-# sequence
-(a + sin(b)) ^ 2        # result

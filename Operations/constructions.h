@@ -13,9 +13,15 @@ double complex toComplex(char *str);
 
 void printNum(double complex value);
 
+double complex fixNegativeZero(double complex a);
+
 #pragma region OPERATIONS
 
 double complex _umns(double complex a, Expression *e);
+
+double complex _flip(double complex a, Expression *e);
+
+double complex _fact(double complex a, Expression *e);
 
 double complex _sum(double complex a, double complex b, Expression *e);
 
@@ -45,6 +51,14 @@ double complex _cos(double complex a, Expression *e);
 
 double complex _tg(double complex a, Expression *e);
 
+double complex _ctg(double complex a, Expression *e);
+
+double complex _rad(double complex a, Expression *e);
+
+double complex _floor(double complex a, Expression *e);
+
+double complex _ceil(double complex a, Expression *e);
+
 double complex _ln(double complex a, Expression *e);
 
 double complex _log(double complex a, Expression *e);
@@ -72,6 +86,8 @@ double complex _pow(double complex a, double complex b, Expression *e);
 double complex _min(double complex a, double complex b, Expression *e);
 
 double complex _max(double complex a, double complex b, Expression *e);
+
+double complex _rand(double complex a, double complex b, Expression *e);
 
 #pragma endregion FUNCTIONS_2ARG
 

@@ -161,6 +161,11 @@ void checkForErrors(char **dest, int dlenght, char *rawForm) {
                 }
             }
         } else if (IS_VAR(dest[i])) { // check for {var names} exception
+            if (i + 1 != dlenght && getOpID(dest[i + 1]) == OPB) {
+                printPseudoStr(rawForm);
+                ERROR("BAD FUNC NAME: wrong function name '%s'", dest[i]);
+                exit(-1);
+            }
             if (!((dest[i][0] >= 'a' && dest[i][0] <= 'z') || (dest[i][0] == '_'))) {
                 printPseudoStr(rawForm);
                 ERROR("BAD VAR NAME: explicit char in variable name");
@@ -256,7 +261,7 @@ int parserReadExpressions(char *filename, Expression *e) {
         for (int i = 0; i < strlen(buffStr); ++i) {
             if (buffStr[i] >= 'A' && buffStr[i] <= 'Z') buffStr[i] += ('a' - 'A');
         }
-        e[number].segCnt = splitExpression(buffStr, e[number].formula, "()=-+*^/,%&|@");
+        e[number].segCnt = splitExpression(buffStr, e[number].formula, "()=-+*^/,%&|@~!");
         if (e[number].formula[0] && !strcmp(e[number].formula[1], "=")) {
             strcpy(e[number].varName, e[number].formula[0]);
             for (int segI = 0; segI < e[number].segCnt - 2; segI++) {

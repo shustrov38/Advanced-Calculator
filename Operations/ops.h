@@ -7,14 +7,14 @@
 #include <stdlib.h>
 
 // start enum index for operations
-#define OPS_H_OPERATIONS_U 10
-#define OPS_H_OPERATIONS_B 20
+#define OPS_H_OPERATIONS_U 100
+#define OPS_H_OPERATIONS_B 200
 // start enum index for functions with 1 argument
-#define OPS_H_FUNCTIONS_1ARG 40
+#define OPS_H_FUNCTIONS_1ARG 300
 // start enum index for functions with 2 arguments
-#define OPS_H_FUNCTIONS_2ARG 60
+#define OPS_H_FUNCTIONS_2ARG 400
 // start enum index for constants
-#define OPS_H_CONSTANTS 80
+#define OPS_H_CONSTANTS 500
 // enum index for variable
 #define OPS_H_VARIABLE 9999
 
@@ -51,14 +51,14 @@
 typedef enum {
     EQL, OPB, CLB, COM, NUM,
     OPERATIONS_U = OPS_H_OPERATIONS_U,
-    UMNS,                           // unary operations
+    UMNS, FLIP, FACT,                   // unary operations
     OPERATIONS_B = OPS_H_OPERATIONS_B,
-    PLS, MNS, MUL, DIV, MOD, PWR,   // common operations
-    AND, OR, XOR,                   // binary operations
+    PLS, MNS, MUL, DIV, MOD, PWR,       // common operations
+    AND, OR, XOR,                       // binary operations
     FUNCTIONS_1ARG = OPS_H_FUNCTIONS_1ARG,
-    SIN, COS, TG, LN, LOG, SQRT, ABS, EXP, REAL, IMAG, MAG, PHASE,
+    SIN, COS, TG, CTG, RAD, FLR, CEIL, LN, LOG, SQRT, ABS, EXP, REAL, IMAG, MAG, PHASE,
     FUNCTIONS_2ARG = OPS_H_FUNCTIONS_2ARG,
-    POW, MAX, MIN,
+    POW, MAX, MIN, RND,
     CONSTANTS = OPS_H_CONSTANTS,
     PI, EULER, J,
     VAR = OPS_H_VARIABLE
@@ -70,6 +70,7 @@ typedef enum {
     PROD,
     FUNC,
     POWER,
+    FACTORIAL,
     UNARY
 } Priority;
 

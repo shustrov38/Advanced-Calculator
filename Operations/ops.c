@@ -21,6 +21,12 @@ OpID getOpID(char *op) {
     if (!strcmp(op, "--"))
         return UMNS;
 
+    if (!strcmp(op, "~"))
+        return FLIP;
+
+    if (!strcmp(op, "!"))
+        return FACT;
+
     if (!strcmp(op, "+"))
         return PLS;
 
@@ -58,6 +64,18 @@ OpID getOpID(char *op) {
     if (!strcmp(op, "tg"))
         return TG;
 
+    if (!strcmp(op, "ctg"))
+        return CTG;
+
+    if (!strcmp(op, "radians"))
+        return RAD;
+
+    if (!strcmp(op, "floor"))
+        return FLR;
+
+    if (!strcmp(op, "ceil"))
+        return CEIL;
+
     if (!strcmp(op, "log"))
         return LOG;
 
@@ -94,6 +112,9 @@ OpID getOpID(char *op) {
     if (!strcmp(op, "max"))
         return MAX;
 
+    if (!strcmp(op, "rand"))
+        return RND;
+
     // constants
     if (!strcmp(op, "pi"))
         return PI;
@@ -123,6 +144,10 @@ Priority getOpPriority(OpID id) {
         case SIN:
         case COS:
         case TG:
+        case CTG:
+        case RAD:
+        case FLR:
+        case CEIL:
         case LOG:
         case LN:
         case SQRT:
@@ -135,10 +160,14 @@ Priority getOpPriority(OpID id) {
         case PHASE:
         case MIN:
         case MAX:
+        case RND:
             return FUNC;
         case PWR:
             return POWER;
+        case FACT:
+            return FACTORIAL;
         case UMNS:
+        case FLIP:
             return UNARY;
         default:
             return NONE;

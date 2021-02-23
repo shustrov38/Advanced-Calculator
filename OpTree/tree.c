@@ -44,12 +44,16 @@ void opTreeGen(Node *node, Stack *stack) {
 double complex opTreeCalc(Node *node, Expression *e, int ind, int n) {
     if (node == NULL) return 0;
 
-    double complex a = opTreeCalc(node->left, e, ind, n);
-    double complex b = opTreeCalc(node->right, e, ind, n);
+    double complex a = fixNegativeZero(opTreeCalc(node->left, e, ind, n));
+    double complex b = fixNegativeZero(opTreeCalc(node->right, e, ind, n));
 
     switch (getOpID(node->value)) {
         case UMNS:
             return _umns(b, &e[ind]);
+        case FLIP:
+            return _flip(b, &e[ind]);
+        case FACT:
+            return _fact(b, &e[ind]);
         case PLS:
             return _sum(a, b, &e[ind]);
         case MNS:
@@ -72,6 +76,16 @@ double complex opTreeCalc(Node *node, Expression *e, int ind, int n) {
             return _sin(b, &e[ind]);
         case COS:
             return _cos(b, &e[ind]);
+        case TG:
+            return _tg(b, &e[ind]);
+        case CTG:
+            return _ctg(b, &e[ind]);
+        case RAD:
+            return _rad(b, &e[ind]);
+        case FLR:
+            return _floor(b, &e[ind]);
+        case CEIL:
+            return _ceil(b, &e[ind]);
         case LN:
             return _ln(b, &e[ind]);
         case LOG:
@@ -96,6 +110,8 @@ double complex opTreeCalc(Node *node, Expression *e, int ind, int n) {
             return _max(a, b, &e[ind]);
         case MIN:
             return _min(a, b, &e[ind]);
+        case RND:
+            return _rand(a, b, &e[ind]);
         case PI:
             return _pi();
         case EULER:
