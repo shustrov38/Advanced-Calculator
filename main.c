@@ -43,9 +43,9 @@ int main(const int argc, const char *argv[]) {
         if (strlen(e[i].varName)) {
             printf("%s = ", e[i].varName);
         } else {
-            printf("expr = ");
+            printf("%s = ", e[i].rawFormula);
+//            printf("expr = ");
         }
-//        printf("%s = ", e[i].rawFormula);
         printNum(e[i].value);
         printf("\n");
     }

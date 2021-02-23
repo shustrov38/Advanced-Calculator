@@ -171,7 +171,7 @@ void prepareVariables(Expression *e, int n) {
     if (g->cycleLength) {
         fprintf(stderr, "Have cycle in variable definition: [");
         for (int i = 0; i < g->cycleLength; ++i) {
-            fprintf(stderr, "%s", g->variables[g->p[i]]);
+            fprintf(stderr, "'%s'", g->variables[g->p[i]]);
             if (i + 1 != g->cycleLength) {
                 fprintf(stderr, " -> ");
             } else {

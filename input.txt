@@ -1,12 +1,6 @@
-numerator/denominator+sin(PI/2)
-denominator=11.5+sqrt(z4)
-numerator=z1*(sin(z2)/cos(z2))+z3-0.62
-z1=   pow(x,5)+          pow(x,7)
-z2=1+log(abs(x))	#e
-z3=abs(x-a)
-z4=pow(x,3)+(sin(x)* cos(e))
-a=3.1
-   #
-   #############
-					#
-x=0.98
+# variables
+a = sqrt(2) / 2
+b = pi / 4              # angle for sine
+
+# sequence
+(a + sin(b)) ^ 2        # result

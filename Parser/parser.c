@@ -5,11 +5,8 @@
 
 #define ERROR(...) fprintf(stderr, __VA_ARGS__)
 
-void printPseudoStr(char **pStr){
-    for(int i = 0; pStr[i][0]!=0; i++){
-        fprintf(stderr, pStr[i]);
-    }
-    fprintf(stderr, "\n");
+void printPseudoStr(char *pStr) {
+    fprintf(stderr, "%s\n", pStr);
 }
 
 void initExpression(Expression *E) {
@@ -47,7 +44,7 @@ Expression *createExpressions() {
 int splitExpression(char *src, char **dest, char divs[]) {
     assert((src) && "given null str ptr");
 
-    int lastValCh = (int)strlen(src) - 1;
+    int lastValCh = (int) strlen(src) - 1;
     while (src[lastValCh] == ' ' || src[lastValCh] == '\n' || src[lastValCh] == '\t') src[lastValCh--] = '\0';
 
     char tmpStr[MAX_ARRAY_SIZE][MAX_V_NAME_SIZE];
@@ -58,13 +55,13 @@ int splitExpression(char *src, char **dest, char divs[]) {
     int k = 0;
     int z = 0;
     int opF = 1; //is op flag for ch
-    for (int ff = 0; ff < strlen(src); ff++){
-        if (src[ff] == '#'){
+    for (int ff = 0; ff < strlen(src); ff++) {
+        if (src[ff] == '#') {
             src[ff] = '\0';
             break;
         }
     }
-    while (src[i] != '\n' && src[i] != '\0' && src[i] != '\r' && src[i] != '#') {
+    while (src[i] != '\n' && src[i] != '\0' && src[i] != '\r') {
         while (i < strlen(src) - 1 && (src[i] == ' ' || src[i] == '\t')) i++;
         int dvF = 0;
         for (int j = 0; j < strlen(divs); j++) {
@@ -99,7 +96,7 @@ int splitExpression(char *src, char **dest, char divs[]) {
     return k + (dest[k][0] != 0);
 }
 
-void checkForErrors(char **dest, int dlenght) {
+void checkForErrors(char **dest, int dlenght, char *rawForm) {
     int brCnt = 0;
     for (int i = 0; i < dlenght; ++i) {
         if (getOpID(dest[i]) == OPB) {
@@ -108,74 +105,73 @@ void checkForErrors(char **dest, int dlenght) {
         } else if (getOpID(dest[i]) == CLB) {
             brCnt--;
             if (i > 0 && getOpID(dest[i - 1]) == OPB) {
-                printPseudoStr(dest);
+                printPseudoStr(rawForm);
                 ERROR("BAD EXPRESSION NOTATION: empty brackets");
-                exit (-1);
+                exit(-1);
             }
         }
         if (brCnt < 0) {
-            printPseudoStr(dest);
+            printPseudoStr(rawForm);
             ERROR("BAD EXPRESSION NOTATION: wrong bracket sequence");
-            exit (-1);
+            exit(-1);
         }
         if (getOpID(dest[i]) == COM) {
             if (i == 0 || i == dlenght - 1 || getOpID(dest[i - 1]) == OPB || getOpID(dest[i + 1]) == CLB) {
-                printPseudoStr(dest);
+                printPseudoStr(rawForm);
                 ERROR("BAD EXPRESSION NOTATION: wrong place for ','");
-                exit (-1);
+                exit(-1);
             }
         }
         if (IS_OPER(dest[i])) { // check for {binary operand} exception
             if (i == 0 || IS_OPER(dest[i - 1]) || IS_OPER(dest[i + 1]) ||
                 (getOpID(dest[i - 1]) == OPB || getOpID(dest[i + 1]) == CLB)) {
-
-                printPseudoStr(dest);
-                ERROR("BAD EXPRESSION NOTATION: operator '%s' must have two operands", dest[i]);
-                exit (-1);
+                printPseudoStr(rawForm);
+                ERROR("BAD EXPRESSION NOTATION: operator '%s' must have two correct operands", dest[i]);
+                exit(-1);
             }
         } else if (IS_NUM(dest[i])) { // check for {num vals} exception
             int pointCnt = 0;
             if (dest[i][0] == '0' && dest[i][1] != '\0' && dest[i][1] != '.') {
-                printPseudoStr(dest);
-                ERROR("BAD NUMBER: wrong number input '%s'", dest[i]);
-                exit (-1);
+                printPseudoStr(rawForm);
+                ERROR("BAD NUMBER: wrong number input");
+                exit(-1);
             }
             for (int j = 0; dest[i][j] != '\0'; j++) {
                 if (dest[i][j] == '.') {
                     pointCnt++;
                     if (dest[i][j + 1] == '\0') {
-                        printPseudoStr(dest);
-                        ERROR("BAD NUMBER: wrong float value notation '%s'", dest[i]);
-                        exit (-1);
+                        printPseudoStr(rawForm);
+                        ERROR("BAD NUMBER: wrong float value notation");
+                        exit(-1);
                     }
                     if (j > 0 && pointCnt > 1) {
-                        printPseudoStr(dest);
-                        ERROR("BAD NUMBER: wrong float value notation '%s'", dest[i]);
-                        exit (-1);
+                        printPseudoStr(rawForm);
+                        ERROR("BAD NUMBER: wrong float value notation");
+                        exit(-1);
                     }
                 } else if (!(dest[i][j] >= '0' && dest[i][j] <= '9' || dest[i][j] == '.' ||
                              dest[i][j] == 'j')) { // appropriate char check
-                    printPseudoStr(dest);
-                    ERROR("BAD NUMBER: wrong number char '%s'", dest[i]);
-                    exit (-1);
+                    printPseudoStr(rawForm);
+                    ERROR("BAD NUMBER: wrong number char");
+                    exit(-1);
                 } else if (dest[i][j] == 'j' && dest[i][j + 1] != '\0') {
-                    printPseudoStr(dest);
-                    ERROR("BAD NUMBER: wrong complex value notation '%s'", dest[i]);
-                    exit (-1);
+                    printPseudoStr(rawForm);
+                    ERROR("BAD NUMBER: wrong complex value notation");
+                    exit(-1);
                 }
             }
         } else if (IS_VAR(dest[i])) { // check for {var names} exception
             if (!((dest[i][0] >= 'a' && dest[i][0] <= 'z') || (dest[i][0] == '_'))) {
-                printPseudoStr(dest);
-                ERROR("BAD VAR NAME: explicit char in variable name '%s'", dest[i]);
-                exit (-1);
+                printPseudoStr(rawForm);
+                ERROR("BAD VAR NAME: explicit char in variable name");
+                exit(-1);
             }
             for (int j = 1; dest[i][j] != '\0'; j++) {
                 if (!((dest[i][j] >= 'a' && dest[i][j] <= 'z') || (dest[i][j] >= '0' && dest[i][j] <= '9') ||
                       (dest[i][j] == '_'))) {
-                    printPseudoStr(dest);
-                    ERROR("BAD VAR NAME: explicit char in variable name '%s'", dest[i]);
-                    exit (-1);
+                    printPseudoStr(rawForm);
+                    ERROR("BAD VAR NAME: explicit char in variable name");
+                    exit(-1);
                 }
             }
         } else if (IS_FUNC_1ARG(dest[i])) { // check for {1 arg func} exception
@@ -187,9 +183,9 @@ void checkForErrors(char **dest, int dlenght) {
                     countBr--;
                 }
                 if (getOpID(dest[j]) == COM && countBr == 1) {
-                    printPseudoStr(dest);
+                    printPseudoStr(rawForm);
                     ERROR("FUNCTION %s ERROR: required 1 argument but more given", dest[i]);
-                    exit (-1);
+                    exit(-1);
                 }
             }
         } else if (IS_FUNC_2ARG(dest[i])) { // need to fix ','
@@ -205,22 +201,22 @@ void checkForErrors(char **dest, int dlenght) {
                     countCom++;
                 }
                 if (countCom == 2) {
-                    printPseudoStr(dest);
+                    printPseudoStr(rawForm);
                     ERROR("FUNCTION %s ERROR: required 2 arguments", dest[i]);
-                    exit (-1);
+                    exit(-1);
                 }
             }
             if (countCom != 1) {
-                printPseudoStr(dest);
+                printPseudoStr(rawForm);
                 ERROR("FUNCTION %s ERROR: required 2 arguments", dest[i]);
-                exit (-1);
+                exit(-1);
             }
         }
     }
     if (brCnt != 0) {
-        printPseudoStr(dest);
+        printPseudoStr(rawForm);
         ERROR("BAD EXPRESSION NOTATION: wrong bracket sequence");
-        exit (-1);
+        exit(-1);
     }
 }
 
@@ -234,11 +230,23 @@ int parserReadExpressions(char *filename, Expression *e) {
     char buffStr[MAX_E_SIZE];
     int number = 0;
     while (fgets(buffStr, MAX_E_SIZE, in)) {
+        // comment
+        int buffLen = (int) strlen(buffStr);
+        for (int i = 0; i < buffLen; ++i) {
+            if (buffStr[i] == '#') {
+                buffStr[i] = '\0';
+                break;
+            }
+        }
+        buffLen = (int) strlen(buffStr) - 1;
+        while (buffStr[buffLen] == ' ' || buffStr[buffLen] == '\t') buffLen--;
+        buffStr[buffLen + 1] = '\0';
         int idx = 0;
-        while(buffStr[idx] == ' ' || buffStr[idx] == '\t') idx++;
-        if (buffStr[idx]=='#' || buffStr[idx] == '\n') {
+        while (buffStr[idx] == ' ' || buffStr[idx] == '\t') idx++;
+        if (buffStr[idx] == '\0' || buffStr[idx] == '\n') {
             continue;
         }
+        // end comment
         // raw
         strcpy(e[number].rawFormula, buffStr);
         if (e[number].rawFormula[strlen(e[number].rawFormula) - 1] == '\n') {
@@ -289,7 +297,7 @@ int parserReadExpressions(char *filename, Expression *e) {
         }
         printf("\n");
 #endif //__PARSER_DEBUG__
-        checkForErrors(e[number].formula, e[number].segCnt);
+        checkForErrors(e[number].formula, e[number].segCnt, e[number].rawFormula);
         ++number;
     }
     fclose(in);
