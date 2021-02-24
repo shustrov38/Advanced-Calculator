@@ -129,7 +129,15 @@ void checkForErrors(char **dest, int dlenght, char *rawForm) {
                 ERROR("BAD EXPRESSION NOTATION: operator '%s' must have two correct operands", dest[i]);
                 exit(-1);
             }
-        } else if (IS_NUM(dest[i])) { // check for {num vals} exception
+        }
+        else if (IS_NUM(dest[i])) { // check for {num vals} exception
+            for(int j=0;dest[i][j]!='\0';j++) {
+                if(!(dest[i][j]>='0' && dest[i][j]<='9')) {
+                    printPseudoStr(rawForm);
+                    ERROR("BAD INPUT: unknown symbol: %c", dest[i][j]);
+                    exit(-1);
+                }
+            }
             int pointCnt = 0;
             if (dest[i][0] == '0' && dest[i][1] != '\0' && dest[i][1] != '.') {
                 printPseudoStr(rawForm);
@@ -174,7 +182,32 @@ void checkForErrors(char **dest, int dlenght, char *rawForm) {
                     exit(-1);
                 }
             }
-        } else if (IS_FUNC_1ARG(dest[i])) { // check for {1 arg func} exception
+            if(IS_VAR(dest[i]) && i<dlenght) {
+                if(getOpID(dest[i+1])==OPB) {
+                    int cntBr=0;
+                    for(int k=i+1;k<dlenght;k++) {
+                        if (getOpID(dest[k]) == OPB) {
+                            cntBr++;
+
+                        }
+                        else if (getOpID(dest[k]) == CLB) {
+                            cntBr--;
+                        }
+                        if(cntBr==0) {
+                            break;
+                        }
+                    }
+                    if(cntBr!=0) {
+                        ERROR("BAD EXPRESSION NOTATION: wrong bracket sequence");
+                        exit(-1);
+                    }
+                    printPseudoStr(rawForm);
+                    ERROR("FUNCTION ERROR: unknown function: %s", dest[i]);
+                    exit(-1);
+                }
+            }
+        }
+        else if (IS_FUNC_1ARG(dest[i])) { // check for {1 arg func} exception
             int countBr = 1;
             for (int j = i + 2; countBr != 0 && j < dlenght; j++) {
                 if (getOpID(dest[j]) == OPB) {
