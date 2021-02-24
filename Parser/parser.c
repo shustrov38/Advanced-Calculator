@@ -161,11 +161,6 @@ void checkForErrors(char **dest, int dlenght, char *rawForm) {
                 }
             }
         } else if (IS_VAR(dest[i])) { // check for {var names} exception
-            if (i + 1 != dlenght && getOpID(dest[i + 1]) == OPB) {
-                printPseudoStr(rawForm);
-                ERROR("BAD FUNC NAME: wrong function name '%s'", dest[i]);
-                exit(-1);
-            }
             if (!((dest[i][0] >= 'a' && dest[i][0] <= 'z') || (dest[i][0] == '_'))) {
                 printPseudoStr(rawForm);
                 ERROR("BAD VAR NAME: explicit char in variable name");

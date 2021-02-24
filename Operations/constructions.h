@@ -8,12 +8,15 @@
 #include <math.h>
 
 #include "../Parser/parser.h"
+#include "ops.h"
 
 double complex toComplex(char *str);
 
 void printNum(double complex value);
 
 double complex fixNegativeZero(double complex a);
+
+double complex idToFunction(char *val, Expression *e, int ind, int n, double complex a, double complex b);
 
 #pragma region OPERATIONS
 
