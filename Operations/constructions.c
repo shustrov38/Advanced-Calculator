@@ -156,8 +156,14 @@ void throwException(char *err, Expression *e) {
 
 // type 0 - complex, 1 - double, 2 - complex and double;
 void numberException(double complex a, double complex b, Expression *e, char *symbol, int type, int isFunc, int args) {
-    int left, right;
-    for (int isComplex = __max(0, type); isComplex < type + 1; ++isComplex) {
+    int left, right, st, en;
+    if (type == 2) {
+        st = 0;
+        en = 1;
+    } else {
+        st = en = type;
+    }
+    for (int isComplex = st; isComplex <= en; ++isComplex) {
         if (isComplex == 0) {
             left = !EQI(a, 0);
             right = !EQI(b, 0);
