@@ -198,6 +198,7 @@ void checkForErrors(char **dest, int dlenght, char *rawForm) {
                         }
                     }
                     if(cntBr!=0) {
+                        printPseudoStr(rawForm);
                         ERROR("BAD EXPRESSION NOTATION: wrong bracket sequence");
                         exit(-1);
                     }

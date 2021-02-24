@@ -1,1 +1,1 @@
-zhopa()
+zhopa
