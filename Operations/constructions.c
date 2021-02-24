@@ -47,7 +47,11 @@ void printNum(double complex value) {
         if (EQR(value, 0)) {
             printImag(cimag(value) * I);
         } else {
-            printf("%f", creal(value));
+            if (IS_INT(value)) {
+                printf("%d", (int)creal(value));
+            } else {
+                printf("%fi", cimag(value));
+            }
             if (cimag(value) < 0) {
                 printf(" - ");
             } else {
