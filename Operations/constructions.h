@@ -1,6 +1,8 @@
 #ifndef ADVANCED_CALCULATOR_CONSTRUCTIONS_H
 #define ADVANCED_CALCULATOR_CONSTRUCTIONS_H
 
+#include <errno.h>
+
 #define _GNU_SOURCE
 #include <complex.h>
 

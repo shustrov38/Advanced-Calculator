@@ -1,6 +1,6 @@
 #include "constructions.h"
 
-#define eps 1e-6
+#define eps 1e-5
 
 // check real complex part of X to integer
 #define IS_INT(X) (fabs(creal(X) - (int)(X)) <= eps)
@@ -12,6 +12,9 @@
 #define EQC(X, Y) (EQR(X, Y) && EQI(X, Y))
 // print error
 #define ERROR(...) fprintf(stderr, __VA_ARGS__)
+// overflow check
+
+#define INF INT_MAX
 
 #define COMPLEX 0
 #define DOUBLE 1
@@ -28,8 +31,10 @@ void printImag(double complex imaginary) {
     } else if (EQI(imaginary, -1)) {
         printf("-i");
     } else {
-        if (IS_INT(cimag(imaginary))) {
-            printf("%di", (int)cimag(imaginary));
+        if (isinf(cimag(imaginary))) {
+            printf("inf");
+        } else if (IS_INT(cimag(imaginary))) {
+            printf("%di", (int) cimag(imaginary));
         } else {
             printf("%fi", cimag(imaginary));
         }
@@ -38,7 +43,9 @@ void printImag(double complex imaginary) {
 
 void printNum(double complex value) {
     if (EQI(value, 0)) {
-        if (IS_INT(value)) {
+        if (isinf(creal(value))) {
+            printf("inf");
+        } else if (IS_INT(value)) {
             printf("%d", (int) value);
         } else {
             printf("%f", creal(value));
@@ -47,10 +54,12 @@ void printNum(double complex value) {
         if (EQR(value, 0)) {
             printImag(cimag(value) * I);
         } else {
-            if (IS_INT(value)) {
-                printf("%d", (int)creal(value));
+            if (isinf(creal(value))) {
+                printf("inf");
+            } else if (IS_INT(value)) {
+                printf("%d", (int) creal(value));
             } else {
-                printf("%fi", cimag(value));
+                printf("%f", creal(value));
             }
             if (cimag(value) < 0) {
                 printf(" - ");
@@ -152,6 +161,8 @@ double complex idToFunction(char *val, Expression *e, int ind, int n, double com
     }
 }
 
+#define OVERFLOW_EXC(COND, MSG, E) if (COND) throwException("Overflow exception "MSG, E)
+
 void throwException(char *err, Expression *e) {
     ERROR("%s\n", e->rawFormula);
     ERROR("%s", err);
@@ -217,8 +228,9 @@ double complex _flip(double complex a, Expression *e) {
 
 double complex _fact(double complex a, Expression *e) {
     numberException(a, 0, e, "!", COMPLEX_AND_DOUBLE, 0, 1);
-    int res = 1;
+    double complex res = 1;
     for (int i = 2; i <= (int) a; ++i) {
+//        OVERFLOW_EXC(INF / i < res, "while '!'", e);
         res *= i;
     }
     return res;

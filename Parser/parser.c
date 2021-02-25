@@ -129,10 +129,9 @@ void checkForErrors(char **dest, int dlenght, char *rawForm) {
                 ERROR("BAD EXPRESSION NOTATION: operator '%s' must have two correct operands", dest[i]);
                 exit(-1);
             }
-        }
-        else if (IS_NUM(dest[i])) { // check for {num vals} exception
-            for(int j=0;dest[i][j]!='\0';j++) {
-                if(!(dest[i][j]>='0' && dest[i][j]<='9')) {
+        } else if (IS_NUM(dest[i])) {
+            for (int j = 0; dest[i][j] != '\0'; j++) {
+                if (!(dest[i][j] >= '0' && dest[i][j] <= '9' || dest[i][j] == '.' || dest[i][j] == 'j')) {
                     printPseudoStr(rawForm);
                     ERROR("BAD INPUT: unknown symbol: %c", dest[i][j]);
                     exit(-1);
@@ -157,11 +156,6 @@ void checkForErrors(char **dest, int dlenght, char *rawForm) {
                         ERROR("BAD NUMBER: wrong float value notation");
                         exit(-1);
                     }
-                } else if (!(dest[i][j] >= '0' && dest[i][j] <= '9' || dest[i][j] == '.' ||
-                             dest[i][j] == 'j')) { // appropriate char check
-                    printPseudoStr(rawForm);
-                    ERROR("BAD NUMBER: wrong number char");
-                    exit(-1);
                 } else if (dest[i][j] == 'j' && dest[i][j + 1] != '\0') {
                     printPseudoStr(rawForm);
                     ERROR("BAD NUMBER: wrong complex value notation");
@@ -171,44 +165,42 @@ void checkForErrors(char **dest, int dlenght, char *rawForm) {
         } else if (IS_VAR(dest[i])) { // check for {var names} exception
             if (!((dest[i][0] >= 'a' && dest[i][0] <= 'z') || (dest[i][0] == '_'))) {
                 printPseudoStr(rawForm);
-                ERROR("BAD VAR NAME: explicit char in variable name");
+                ERROR("BAD VAR NAME: explicit char '%c' in variable name", dest[i][0]);
                 exit(-1);
             }
             for (int j = 1; dest[i][j] != '\0'; j++) {
                 if (!((dest[i][j] >= 'a' && dest[i][j] <= 'z') || (dest[i][j] >= '0' && dest[i][j] <= '9') ||
                       (dest[i][j] == '_'))) {
                     printPseudoStr(rawForm);
-                    ERROR("BAD VAR NAME: explicit char in variable name");
+                    ERROR("BAD VAR NAME: explicit char '%c' in variable name", dest[i][j]);
                     exit(-1);
                 }
             }
-            if(IS_VAR(dest[i]) && i<dlenght) {
-                if(getOpID(dest[i+1])==OPB) {
-                    int cntBr=0;
-                    for(int k=i+1;k<dlenght;k++) {
+            if (IS_VAR(dest[i]) && i < dlenght) {
+                if (getOpID(dest[i + 1]) == OPB) {
+                    int cntBr = 0;
+                    for (int k = i + 1; k < dlenght; k++) {
                         if (getOpID(dest[k]) == OPB) {
                             cntBr++;
 
-                        }
-                        else if (getOpID(dest[k]) == CLB) {
+                        } else if (getOpID(dest[k]) == CLB) {
                             cntBr--;
                         }
-                        if(cntBr==0) {
+                        if (cntBr == 0) {
                             break;
                         }
                     }
-                    if(cntBr!=0) {
+                    if (cntBr != 0) {
                         printPseudoStr(rawForm);
                         ERROR("BAD EXPRESSION NOTATION: wrong bracket sequence");
                         exit(-1);
                     }
                     printPseudoStr(rawForm);
-                    ERROR("FUNCTION ERROR: unknown function: %s", dest[i]);
+                    ERROR("FUNCTION ERROR: unknown function: '%s()'", dest[i]);
                     exit(-1);
                 }
             }
-        }
-        else if (IS_FUNC_1ARG(dest[i])) { // check for {1 arg func} exception
+        } else if (IS_FUNC_1ARG(dest[i])) { // check for {1 arg func} exception
             int countBr = 1;
             for (int j = i + 2; countBr != 0 && j < dlenght; j++) {
                 if (getOpID(dest[j]) == OPB) {
@@ -218,7 +210,7 @@ void checkForErrors(char **dest, int dlenght, char *rawForm) {
                 }
                 if (getOpID(dest[j]) == COM && countBr == 1) {
                     printPseudoStr(rawForm);
-                    ERROR("FUNCTION %s ERROR: required 1 argument but more given", dest[i]);
+                    ERROR("FUNCTION ERROR: function '%s()' required one argument but more given", dest[i]);
                     exit(-1);
                 }
             }
@@ -236,13 +228,13 @@ void checkForErrors(char **dest, int dlenght, char *rawForm) {
                 }
                 if (countCom == 2) {
                     printPseudoStr(rawForm);
-                    ERROR("FUNCTION %s ERROR: required 2 arguments", dest[i]);
+                    ERROR("FUNCTION ERROR: function '%s()' required two arguments", dest[i]);
                     exit(-1);
                 }
             }
             if (countCom != 1) {
                 printPseudoStr(rawForm);
-                ERROR("FUNCTION %s ERROR: required 2 arguments", dest[i]);
+                ERROR("FUNCTION ERROR: function '%s()' required two arguments", dest[i]);
                 exit(-1);
             }
         }

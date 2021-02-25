@@ -80,6 +80,14 @@ void gProcess(Graph *g) {
 static int compareByDependency(const void *a, const void *b) {
     int aDep = ((Expression *) a)->trueDependenciesCnt;
     int bDep = ((Expression *) b)->trueDependenciesCnt;
+    if (aDep - bDep == 0) {
+        int aLen = (int) strlen(((Expression *) a)->varName);
+        int bLen = (int) strlen(((Expression *) b)->varName);
+        if (aLen == bLen) {
+            return strcmp(((Expression *) a)->varName, ((Expression *) b)->varName);
+        }
+        return aLen - bLen;
+    }
     return aDep - bDep;
 }
 

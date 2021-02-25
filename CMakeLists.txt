@@ -39,4 +39,4 @@ set_tests_properties(More_subs                  PROPERTIES PASS_REGULAR_EXPRESSI
 set_tests_properties(Bad_function_2_arguments   PROPERTIES WILL_FAIL TRUE                                       )
 set_tests_properties(Simple_unary_operations    PROPERTIES PASS_REGULAR_EXPRESSION "res = 190"                  )
 set_tests_properties(Unary_operations           PROPERTIES PASS_REGULAR_EXPRESSION "res = -14.750000"           )
-set_tests_properties(Complex_and_unary          PROPERTIES PASS_REGULAR_EXPRESSION "res = 30.000000 - 3.000000i")
+set_tests_properties(Complex_and_unary          PROPERTIES PASS_REGULAR_EXPRESSION "res = 30 - 3i"              )
