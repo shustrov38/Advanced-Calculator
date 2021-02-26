@@ -45,15 +45,25 @@ int main(const int argc, const char *argv[]) {
         e[i].value = opTreeCalc(root, e, i, n);
     }
 
-    for (int i = 0; i < n; ++i) {
-        if (strlen(e[i].varName)) {
-            printf("%s = ", e[i].varName);
-        } else {
-            printf("%s = ", e[i].rawFormula);
-//            printf("expr = ");
+    if (argc == ARG_COUNT) {
+        for (int i = 0; i < n; ++i) {
+            if (!strcmp(e[i].varName, "res")) {
+                printf("res = ");
+                printNum(e[i].value);
+                printf("\n");
+                break;
+            }
         }
-        printNum(e[i].value);
-        printf("\n");
+    } else {
+        for (int i = 0; i < n; ++i) {
+            if (strlen(e[i].varName)) {
+                printf("%s = ", e[i].varName);
+            } else {
+                printf("%s = ", e[i].rawFormula);
+            }
+            printNum(e[i].value);
+            printf("\n");
+        }
     }
 
     destroyExpressionsArray(e);

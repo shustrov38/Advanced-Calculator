@@ -1,0 +1,5 @@
+res = real(((dif+delta)/dif)) ^ (floor(sin(alpha))*ceil(cos(beta))+1) # 1.455010
+delta = exp(-1) + exp(-1)*j # 0.367879 + 0.367879i
+dif = pow(j,ln(pi)) + pow(j,ln(pi-1)) # 0.140472 + 1.904939i
+alpha = pi/2 # 1.570796
+beta = radians(30) # 0.523599

@@ -1,0 +1,3 @@
+a = 783*40-log(100)^2					#31316
+b = min(max(a,log(2000)*45), ceil(37489*a))		#31316
+res = min((sin(radians(a))-tg(radians(b))), ceil(a))	#0.000170		

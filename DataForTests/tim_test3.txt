@@ -1,0 +1,5 @@
+res = log(max(a, b))+sqrt(c)*ln(e*g) #4
+a = ceil(112-12*cos(radians(0))) #100
+b = 2^2!+4*floor(12+4+pow(2, 4)) - 150 #-18
+c = cos(radians(0))+sin(radians(90))+(cos(54)^2+sin(54)^2)+1 #4
+g = real(1+12j) #1

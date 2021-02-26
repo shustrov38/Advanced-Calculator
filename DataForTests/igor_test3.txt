@@ -1,0 +1,4 @@
+res = sqrt(ln(gamma)/log(gamma)) # 1.517427
+gamma = exp(pow(tg(a),2)+sin(a)*cos(a)+pow(ctg(a),2)) # 25086736740.714386
+a = radians(abs(imag(phi)/real(phi))) # 0.202568
+phi = pi + pow(pi,pi)*j # 3.141593 + 36.462160i

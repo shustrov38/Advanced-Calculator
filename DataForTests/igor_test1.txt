@@ -1,0 +1,6 @@
+res = ln(log(alpha)+log(beta))^k_norma # 1.326028
+alpha = abs(real(v1*v0)) # 149.413159
+beta = abs(imag(v1*v0)) # 12.696481
+v1 = exp(3) + j # 20.085537 + i
+v0 = exp(2) - j # 7.389056 - i
+k_norma = exp(log(pi)) # 1.644029

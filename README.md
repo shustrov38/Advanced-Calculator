@@ -78,7 +78,7 @@ exp(-j*PI*alpha*len/v0) = 0.584118 + 0.811669i
       # FUNCTION ERROR - ошибки математических функций
       zhma(54)          # unknown function: 'zhma()'
       sin(a, b, c)      # function 'sin()' required one argument but more given
-      max(a,)            # function 'max()' required two arguments
+      max(a,)           # function 'max()' required two arguments
       ```
 
 2. Сортировка выражений

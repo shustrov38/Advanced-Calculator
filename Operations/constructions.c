@@ -161,8 +161,6 @@ double complex idToFunction(char *val, Expression *e, int ind, int n, double com
     }
 }
 
-#define OVERFLOW_EXC(COND, MSG, E) if (COND) throwException("Overflow exception "MSG, E)
-
 void throwException(char *err, Expression *e) {
     ERROR("%s\n", e->rawFormula);
     ERROR("%s", err);
@@ -230,7 +228,6 @@ double complex _fact(double complex a, Expression *e) {
     numberException(a, 0, e, "!", COMPLEX_AND_DOUBLE, 0, 1);
     double complex res = 1;
     for (int i = 2; i <= (int) a; ++i) {
-//        OVERFLOW_EXC(INF / i < res, "while '!'", e);
         res *= i;
     }
     return res;
