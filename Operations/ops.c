@@ -164,11 +164,11 @@ Priority getOpPriority(OpID id) {
             return FUNC;
         case PWR:
             return POWER;
-        case FACT:
-            return FACTORIAL;
         case UMNS:
         case FLIP:
             return UNARY;
+        case FACT:
+            return FACTORIAL;
         default:
             return NONE;
     }

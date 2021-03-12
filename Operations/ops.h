@@ -70,8 +70,8 @@ typedef enum {
     PROD,
     FUNC,
     POWER,
-    FACTORIAL,
-    UNARY
+    UNARY,
+    FACTORIAL
 } Priority;
 
 OpID getOpID(char *op);

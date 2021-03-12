@@ -226,6 +226,9 @@ double complex _flip(double complex a, Expression *e) {
 
 double complex _fact(double complex a, Expression *e) {
     numberException(a, 0, e, "!", COMPLEX_AND_DOUBLE, 0, 1);
+    if ((int) a < 0) {
+        throwException("Operation '!' is not defined for negative numbers.", e);
+    }
     double complex res = 1;
     for (int i = 2; i <= (int) a; ++i) {
         res *= i;
